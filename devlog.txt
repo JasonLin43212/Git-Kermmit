@@ -1,4 +1,4 @@
-Team Git-Kermit:\n
+Team Git-Kermit:
 
-foleyM -- 2018-10-17 12:10\n
-Added design PDF, made the DB explanation more clear.\n
+foleyM -- 2018-10-17 12:10
+Added design PDF, made the DB explanation more clear.
