@@ -1,15 +1,53 @@
-DEVLOG
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+USAGE:
+* Replace all fields, angle brackets included, with specified info.
+  eg, pd <pd#> --> pd 3
+* Delete these instructions once all teammates understand usage.
+  (from tilde bar above to tilde bar below)
+* rename this file devlog.txt
 
-Team Git-Kermit:
-Aleksandra Koroza (Project Manager)
+devlog--
+Use keyboard shortcut to jump to end,
+ replicate entry template, (Ctrl-Shift up x5, Ctrl-X, Ctrl-V x2)
+ modify appropriately.
+Each entry should begin with the following format:
+ firstL -- TIMESTAMP\n
+e.g.: 
+clydeS -- 2999-12-31 23:59
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Git-Kermmit:
+Aleksandra Koroza
 Maryann Foley
 Mohtasim Howlader
 Robin Han
+pd 8
+---------------------
+Story-Time!!! A website where users come together to create stories.
+
+
+ ______   ______   __   __   __       ______   _______     
+/_____/\ /_____/\ /_/\ /_/\ /_/\     /_____/\ /______/\    
+\:::_ \ \\::::_\/_\:\ \\ \ \\:\ \    \:::_ \ \\::::__\/__  
+ \:\ \ \ \\:\/___/\\:\ \\ \ \\:\ \    \:\ \ \ \\:\ /____/\ 
+  \:\ \ \ \\::___\/_\:\_/.:\ \\:\ \____\:\ \ \ \\:\\_  _\/ 
+   \:\/.:| |\:\____/\\ ..::/ / \:\/___/\\:\_\ \ \\:\_\ \ \ 
+    \____/_/ \_____\/ \___/_(   \_____\/ \_____\/ \_____\/ 
+==============================================================
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
 
 foleyM -- 2018-10-17 12:10
+--------------------------------------------------------------
 Added design PDF, made the DB explanation more clear (outlined table usage).
-
+==============================================================
 korozaA -- 2018-10-17 12:25
+--------------------------------------------------------------
 Team reflection on Programming Sucks
 1) Given that each team member has different strengths and areas of expertise, we must do our best to make sure that everyone is on the same page before implementing any major feature. Clear communication and delineation of tasks is crucial for building our sturdy bridge.
 2) Master the basics before venturing into the deep end. You must build and hone your skills before treading further into the bottomless pit that is the set of all computer science tools available on the Internet. As a team, we will try to limit confusion by sticking to simplicity. 
+==============================================================
+hanR -- 2018-10-16 2:44
+--------------------------------------------------------------
+Edited devlog format
+==============================================================
