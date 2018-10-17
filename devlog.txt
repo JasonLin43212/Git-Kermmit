@@ -1,4 +1,15 @@
+DEVLOG
+
 Team Git-Kermit:
+Aleksandra Koroza (Project Manager)
+Maryann Foley
+Mohtasim Howlader
+Robin Han
 
 foleyM -- 2018-10-17 12:10
-Added design PDF, made the DB explanation more clear.
+Added design PDF, made the DB explanation more clear (outlined table usage).
+
+korozaA -- 2018-10-17 12:25
+Team reflection on Programming Sucks
+1) Given that each team member has different strengths and areas of expertise, we must do our best to make sure that everyone is on the same page before implementing any major feature. Clear communication and delineation of tasks is crucial for building our sturdy bridge.
+2) Master the basics before venturing into the deep end. You must build and hone your skills before treading further into the bottomless pit that is the set of all computer science tools available on the Internet. As a team, we will try to limit confusion by sticking to simplicity. 
