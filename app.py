@@ -1,8 +1,19 @@
 from flask import Flask, render_template, request, session, url_for, redirect, flash
 import os
+import sqlite3
+
+DB_FILE="discobandit.db" #delete before every subsequent run
+
+db = sqlite3.connect(DB_FILE) #open if file exists, otherwise create
+c = db.cursor()               #facilitate db ops
 
 app = Flask(__name__)
 app.secret_key=os.urandom(32)# 32 bits of random data as a string
+
+c.execute("CREATE TABLE if not exists edits(user TEXT, title TEXT, edit_made TEXT, content TEXT)")
+c.execute("CREATE TABLE if not exists recent(title TEXT, user TEXT)")
+c.execute("CREATE TABLE if not exists users(user TEXT, password TEXT)")
+
 
 @app.route("/")
 def homepage():
@@ -35,9 +46,14 @@ def callback():
 
 @app.route("/newUser")
 def createAcct():
-	if not session.get("uname"):
-		return render_template("newUser.html")
+	givenUname=request.form["username"]
+	givenPwd=request.form["password"]
+	c.execute("INSERT INTO users VALUES(?,?)",(givenUname,givenPwd))
 	return redirect(url_for("homepage"))
+
+	#if not session.get("uname"):
+	#	return render_template("newUser.html")
+	#return redirect(url_for("homepage"))
 
 
 @app.route("/read") #title =
