@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block log %}Logout{% endblock %}
+
+{% block content %}
+You are logged in as <b>{{user}}</b>
+<br><br><br>
+
+Stories you have contributed to:<br>
+<table border = "1">
+    <th><a href="/read">Story 1 </a></th>
+</table>
+
+<br>
+
+<a href="/create">Create a new story</a>
+
+
+<br><br><br>
+
+<a href="/unwrittenStories">View stories you can add to</a>
+
+{% endblock %}

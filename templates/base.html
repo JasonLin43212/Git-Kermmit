@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <h1><a href="/">Git-Kermit StoryTime</a></h1>
+    {% block head %}
+
+    <title>{% block title %} {% endblock %}</title>
+
+    {% endblock %}
+</head>
+<body>
+    <div align ="right"><a href="/logout">{% block log %} {% endblock %}</a></div>
+
+    <font color="red"> {% set msgs = get_flashed_messages() %}
+        {% for each in msgs %}
+        {{each}}
+        <br>
+        {% endfor %}
+    </font>
+
+
+    {% block content %}
+    {% endblock %}
+
+    <p style="position: absolute; bottom: 5px"> &copy; Team Git-Kermit, 1900-2018. Don't copy or you go to jail. </p>
+</body>
+</html>

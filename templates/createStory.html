@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+{% block log %}Logout{% endblock %}
+
+{% block content %}
+<h2> Create a story </h2>
+<form action="/newStoryAuth" method="POST">
+    Title: <input type="text" name="storyTitle"><br>
+    <br>
+    Text: <input type="text" name="storyText" width="50"> <br> <br>
+    <button type ="submit">Submit</button>
+</form>
+{% endblock %}
