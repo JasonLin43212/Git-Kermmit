@@ -3,4 +3,14 @@
 {% block log %}Logout{% endblock %}
 {% block content %}
 Choose story to edit:
+<h2> Edit a story </h2>
+<form action="/newStoryAuth" method="POST" id="form">
+    <button type ="submit">Submit</button><br>
+    <br>
+    Title: <input type="text" name="storyTitle"><br>
+    <br>
+</form>
+<p>Text:</p>
+<textarea rows="10" cols="100" name="storyText" form="form">
+Enter text here...</textarea>
 {% endblock %}

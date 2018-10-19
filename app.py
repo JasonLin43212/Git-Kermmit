@@ -19,7 +19,10 @@ c.execute("CREATE TABLE if not exists users(user TEXT, password TEXT)")
 def homepage():
 	if session.get("uname"):
 		username = session["uname"]
-		return render_template("loggedIn.html", user = username, stories = "SOME SQLITE COMMAND TO GET CONTRIBUTED STORIES")
+		with sqlite3.connect("discobandit.db") as db:	
+			cur= db.cursor()
+			fetchedPass= cur.execute("SELECT title from edits WHERE user = ?",(username,)).fetchall()
+		return render_template("loggedIn.html", user = username, stories = fetchedPass, lenStories = len(fetchedPass))
 	return render_template("login.html",Title = 'Login')
 
 @app.route('/logout')

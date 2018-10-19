@@ -8,6 +8,9 @@ You are logged in as <b>{{user}}</b>
 <br><br><br>
 
 Stories you have contributed to:<br>
+{% if lenStories == 0 %}
+<p>No stories?! Better get to writing!</p>
+{% else %}
 <table border = "1">
 <tr>
     <th>Story</th></tr>
@@ -16,7 +19,7 @@ Stories you have contributed to:<br>
     {% endfor %}
     {# Maybe add num of words #}
 </table>
-
+{% endif %}
 <br>
 
 <a href="/create">Create a new story</a>
