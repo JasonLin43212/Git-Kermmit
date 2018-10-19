@@ -53,4 +53,8 @@ hanR -- 2018-10-18 11:00
 --------------------------------------------------------------
 Fixed urldirect for newly created users. Other login features not yet included. 
 ==============================================================
+hanR -- 2018-10-19 2:03
+--------------------------------------------------------------
+Create account checks to see if username already exists in the DB. If it does, asks user to create another username.
+==============================================================
 
