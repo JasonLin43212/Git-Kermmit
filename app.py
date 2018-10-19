@@ -8,7 +8,7 @@ app.secret_key=os.urandom(32)# 32 bits of random data as a string
 def homepage():
 	if session.get("uname"):
 		username = session["uname"]
-		return render_template("loggedIn.html", user = username)
+		return render_template("loggedIn.html", user = username, stories = "SOME SQLITE COMMAND TO GET CONTRIBUTED STORIES")
 	return render_template("login.html",Title = 'Login')
 
 @app.route('/logout')
