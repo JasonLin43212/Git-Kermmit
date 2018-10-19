@@ -32,29 +32,33 @@ def logout():
 def callback():
 	givenUname=request.form["username"]
 	givenPwd=request.form["password"]
-	if givenUname=="usr":
-		if givenPwd=="pwd":
-			session["uname"]=givenUname
+	with sqlite3.connect("discobandit.db") as db:
+		cur= db.cursor()
+		fetchedPass= cur.execute("SELECT password from users WHERE user = ?",(givenUname).fetchall()
+		if fetchedPass== givenPwd:#fix since fetchall returns a tuple of tuples
+			session["uname"]= givenUname
 			if session.get("error"):
 				session.pop("error")
+			else:
+				session["error"]=2#error 2 means password was wrong
+				return redirect(url_for("homepage"))
 		else:
-			session["error"]=2#error 2 means password was wrong
-		return redirect(url_for("homepage"))
-	else:
-		session["error"]=1
-		return redirect(url_for("homepage"))#error 1 means username was wrong
+			session["error"]=1
+			return redirect(url_for("homepage"))#error 1 means username was wrong
 
-@app.route("/newUser")
+@app.route("/newUser", methods=['POST'])
 def createAcct():
+	return render_template("newUser.html")
+
+#adds account to db and checks if it exists
+@app.route("/addUser", methods=['POST'])
+def addAcct():
 	givenUname=request.form["username"]
 	givenPwd=request.form["password"]
-	c.execute("INSERT INTO users VALUES(?,?)",(givenUname,givenPwd))
+	with sqlite3.connect("discobandit.db") as db:
+		cur= db.cursor()
+		cur.execute("INSERT INTO users VALUES(?,?)",(givenUname,givenPwd))
 	return redirect(url_for("homepage"))
-
-	#if not session.get("uname"):
-	#	return render_template("newUser.html")
-	#return redirect(url_for("homepage"))
-
 
 @app.route("/read") #title =
 def read():

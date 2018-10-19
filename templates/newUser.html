@@ -4,13 +4,13 @@
 
 
 {% block content %}
-<form action="/auth" method="post">
+<form action="/addUser" method="post">
     <p>Create a username and password </p>
 
 
-    Username: <input type="text" name="username">   <font color="red"> {{incUser}} </font>
+    Username: <input type="text" name="username">
     <br>
-    Password: <input type="password" name="password">   <font color="red"> {{incPass}} </font>
+    Password: <input type="password" name="password">
     <br>
     <input type="submit" name="Subl">
 </form>
