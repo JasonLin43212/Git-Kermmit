@@ -49,3 +49,8 @@ hanR -- 2018-10-18 10:26
 --------------------------------------------------------------
 DataBase now stores newly created users and when a user logs in, it checks to see if username/pass exists in db.
 ==============================================================
+hanR -- 2018-10-18 11:00
+--------------------------------------------------------------
+Fixed urldirect for newly created users. Other login features not yet included. 
+==============================================================
+
