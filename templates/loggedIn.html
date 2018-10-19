@@ -9,7 +9,12 @@ You are logged in as <b>{{user}}</b>
 
 Stories you have contributed to:<br>
 <table border = "1">
-    <th><a href="/read">Story 1 </a></th>
+<tr>
+    <th>Story</th></tr>
+    {% for story in stories %}
+    <tr><td><a href = {{ url_for('read', title=story) }}>{{ story }}</a></td></tr>
+    {% endfor %}
+    {# Maybe add num of words #}
 </table>
 
 <br>
