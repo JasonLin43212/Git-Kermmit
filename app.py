@@ -33,7 +33,7 @@ def callback():
 	givenUname=request.form["username"]
 	givenPwd=request.form["password"]
 	#print("read")
-	with sqlite3.connect("discobandit.db") as db:	
+	with sqlite3.connect("discobandit.db") as db:
 		cur= db.cursor()
 
 		fetchedPass= cur.execute("SELECT password from users WHERE user = ?",(givenUname,)).fetchall()
@@ -55,7 +55,7 @@ def callback():
 			session["error"]=1
 			return redirect(url_for("homepage"))#error 1 means username was wrong
 
-@app.route("/newUser", methods=['POST'])
+@app.route("/newUser", methods=['POST','GET'])
 def createAcct():
 	return render_template("newUser.html")
 
@@ -66,7 +66,13 @@ def addAcct():
 	givenPwd=request.form["password"]
 	with sqlite3.connect("discobandit.db") as db:
 		cur= db.cursor()
-		cur.execute("INSERT INTO users VALUES(?,?)",(givenUname,givenPwd))
+		fetchedPass= cur.execute("SELECT password from users WHERE user = ?",(givenUname,)).fetchall()
+		print(len(fetchedPass))
+		if (len(fetchedPass) == 0):
+			cur.execute("INSERT INTO users VALUES(?,?)",(givenUname,givenPwd))
+		else:
+			flash("USER NAME ALREADY EXISTS PLS TRY AGAIN")
+			return redirect(url_for("createAcct"))
 	return redirect(url_for("homepage"))
 
 @app.route("/read") #title =
