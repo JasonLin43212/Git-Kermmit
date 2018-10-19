@@ -34,8 +34,14 @@ def callback():
 	givenPwd=request.form["password"]
 	with sqlite3.connect("discobandit.db") as db:
 		cur= db.cursor()
-		fetchedPass= cur.execute("SELECT password from users WHERE user = ?",(givenUname).fetchall()
-		if fetchedPass== givenPwd:#fix since fetchall returns a tuple of tuples
+		fetchedPass= cur.execute("SELECT password from users WHERE user = ?",(givenUname,)).fetchall()
+
+
+		print(givenUname)
+		print(fetchedPass[0][0])
+
+		if fetchedPass[0][0] == givenPwd:
+			#fix since fetchall returns a tuple of tuples
 			session["uname"]= givenUname
 			if session.get("error"):
 				session.pop("error")
