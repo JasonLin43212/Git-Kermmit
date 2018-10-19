@@ -32,23 +32,26 @@ def logout():
 def callback():
 	givenUname=request.form["username"]
 	givenPwd=request.form["password"]
-	with sqlite3.connect("discobandit.db") as db:
+	#print("read")
+	with sqlite3.connect("discobandit.db") as db:	
 		cur= db.cursor()
+
 		fetchedPass= cur.execute("SELECT password from users WHERE user = ?",(givenUname,)).fetchall()
-
-
-		print(givenUname)
-		print(fetchedPass[0][0])
-
-		if fetchedPass[0][0] == givenPwd:
-			#fix since fetchall returns a tuple of tuples
-			session["uname"]= givenUname
-			if session.get("error"):
-				session.pop("error")
+		#print(givenUname)
+		#print(fetchedPass[0][0])
+		if fetchedPass:
+			print("it exists")
+			if fetchedPass[0][0] == givenPwd:
+				#fix since fetchall returns a tuple of tuples
+				session["uname"]= givenUname
+				if session.get("error"):
+					session.pop("error")
+				return redirect(url_for("homepage"))
 			else:
 				session["error"]=2#error 2 means password was wrong
 				return redirect(url_for("homepage"))
 		else:
+			print("it doesn't")
 			session["error"]=1
 			return redirect(url_for("homepage"))#error 1 means username was wrong
 
