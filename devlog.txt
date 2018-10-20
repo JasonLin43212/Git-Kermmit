@@ -1,5 +1,5 @@
 Git-Kermmit:
-Aleksandra Koroza
+Aleksandra Koroza (Program Manager)
 Maryann Foley
 Mohtasim Howlader
 Robin Han
@@ -56,5 +56,9 @@ Fixed urldirect for newly created users. Other login features not yet included.
 hanR -- 2018-10-19 2:03
 --------------------------------------------------------------
 Create account checks to see if username already exists in the DB. If it does, asks user to create another username.
+==============================================================
+korozaA -- 2018-10-20 1:45
+--------------------------------------------------------------
+User can now create stories. Titles and initial story contents stored in appropriate tables. 
 ==============================================================
 

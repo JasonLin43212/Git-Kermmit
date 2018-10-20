@@ -19,7 +19,7 @@ c.execute("CREATE TABLE if not exists users(user TEXT, password TEXT)")
 def homepage():
 	if session.get("uname"):
 		username = session["uname"]
-		with sqlite3.connect("discobandit.db") as db:	
+		with sqlite3.connect("discobandit.db") as db:
 			cur= db.cursor()
 			fetchedPass= cur.execute("SELECT title from edits WHERE user = ?",(username,)).fetchall()
 		return render_template("loggedIn.html", user = username, stories = fetchedPass, lenStories = len(fetchedPass))
@@ -102,9 +102,26 @@ def newStory():
 		return redirect(url_for("homepage"))
 	return render_template("createStory.html")
 
-# @app.route("/newStoryAuth")
-# def authStory():
-#
+@app.route("/newStoryAuth", methods=['POST','GET'])
+def authStory():
+	givenTitle=request.form["storyTitle"]
+	givenStory=request.form["storyText"]
+	username=session["uname"]
+
+	with sqlite3.connect("discobandit.db") as db:
+		cur= db.cursor()
+		#
+		fetchedUser= cur.execute("SELECT user from recent WHERE title = ?",(givenTitle,)).fetchall()
+		#print(len(fetchedPass))
+		if (len(fetchedUser) == 0):
+			cur.execute("INSERT INTO recent VALUES(?,?)",(givenTitle,username))
+			cur.execute("INSERT INTO edits VALUES(?,?,?,?)",(username,givenTitle,givenStory,givenStory))
+		else:
+			flash("STORY WITH THAT TITLE ALREADY EXISTS PLS TRY AGAIN")
+			return redirect(url_for("newStory"))
+	flash("congrats you added a story!")
+	return redirect(url_for("homepage"))
+
 
 
 
