@@ -65,3 +65,7 @@ foleyM -- 2018-10-21 3:30
 --------------------------------------------------------------
 User can now view all unedited stories. They can also edit stories. Titles and story contents (all content and edit made) stored in appropriate tables. The recents table is updated as well.
 ==============================================================
+hanR -- 2018-10-21 4:29
+--------------------------------------------------------------
+When creating account, user must confirm password to make sure the password typed in intially is the password he/she wants
+==============================================================
