@@ -67,11 +67,15 @@ def createAcct():
 def addAcct():
 	givenUname=request.form["username"]
 	givenPwd=request.form["password"]
+	confirmPwd = request.form["confirm_password"]
 	with sqlite3.connect("discobandit.db") as db:
 		cur= db.cursor()
 		fetchedPass= cur.execute("SELECT password from users WHERE user = ?",(givenUname,)).fetchall()
 		print(len(fetchedPass))
-		if (len(fetchedPass) == 0):
+		if (confirmPwd != givenPwd):
+			flash("Paswords don't match. Please try again!")
+			return redirect(url_for("createAcct"))		
+		elif (len(fetchedPass) == 0):
 			cur.execute("INSERT INTO users VALUES(?,?)",(givenUname,givenPwd))
 		else:
 			flash("USER NAME ALREADY EXISTS PLS TRY AGAIN")
