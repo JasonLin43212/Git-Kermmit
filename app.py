@@ -80,9 +80,14 @@ def addAcct():
 
 @app.route("/read") #title =
 def read():
+	print(request.args.get("title"))
+	with sqlite3.connect("discobandit.db") as db:
+		cur= db.cursor()
+		fetchedPass= cur.execute("SELECT user from recent WHERE title = ?",(request.args.get("title"),)).fetchone()[0]
+		fetchedPass2= cur.execute("SELECT content from edits WHERE user = ? AND title=?",(fetchedPass,request.args.get("title"),)).fetchone()
 	if not session.get("uname"):
 		return redirect(url_for("homepage"))
-	return render_template("readStory.html")
+	return render_template("readStory.html", title=request.args.get("title"), story=fetchedPass2[0])
 
 @app.route("/unwrittenStories")
 def write():

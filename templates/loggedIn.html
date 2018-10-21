@@ -15,7 +15,7 @@ Stories you have contributed to:<br>
 <tr>
     <th>Story</th></tr>
     {% for story in stories %}
-    <tr><td><a href = {{ url_for('read', title=story) }}>{{ story }}</a></td></tr>
+    <tr><td><a href = {{ url_for('read', title=story) }}>{{ story[0] }}</a></td></tr>
     {% endfor %}
     {# Maybe add num of words #}
 </table>
