@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 {% extends "base.html" %}
-
+{% block title %}Homepage{% endblock %}
 {% block log %}Logout{% endblock %}
 
 {% block content %}
 You are logged in as <b>{{user}}</b>
 <br><br><br>
 
-Stories you have contributed to:<br>
+<h2>Stories you have contributed to:</h2><br>
 {% if lenStories == 0 %}
 <p>No stories?! Better get to writing!</p>
 {% else %}

@@ -93,10 +93,24 @@ def read():
 def write():
 	if not session.get("uname"):
 		return redirect(url_for("homepage"))
-	return render_template("allStories.html")
+	with sqlite3.connect("discobandit.db") as db:
+		cur= db.cursor()
+		fetchedPass= cur.execute("SELECT title from edits WHERE user = ?",(session["uname"],)).fetchall()
+		written=set([x[0] for x in fetchedPass])
+		fetchedPass2= cur.execute("SELECT title from recent").fetchall()
+		allSt=[x[0] for x in fetchedPass2]
+		unwritten=[]
+		for x in allSt:
+			print(x)
+			if x in written:
+				continue
+			unwritten.append(x)
+		print(unwritten)
+		return render_template("allStories.html", stories=unwritten, lenStories=len(unwritten))
+	return redirect(url_for("homepage"))
 
 @app.route("/edit")#title
-def edit():
+def edit(): # make sure that they cant edit one (check edited stories before allowing them to submit)
 	if not session.get("uname"):
 		return redirect(url_for("homepage"))
 
