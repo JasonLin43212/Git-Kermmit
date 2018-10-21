@@ -33,7 +33,7 @@ hanR -- 2018-10-17 2:44
 --------------------------------------------------------------
 Edited devlog format
 ==============================================================
-foleyM -- 2018-10-17 2:54
+foleyM -- 2018-10-17 14:54
 --------------------------------------------------------------
 Pushed Flask Starter Kit to repo + added few functions
 ==============================================================
@@ -65,7 +65,12 @@ foleyM -- 2018-10-21 3:30
 --------------------------------------------------------------
 User can now view all unedited stories. They can also edit stories. Titles and story contents (all content and edit made) stored in appropriate tables. The recents table is updated as well.
 ==============================================================
-hanR -- 2018-10-21 4:29
+hanR -- 2018-10-21 16:29
 --------------------------------------------------------------
 When creating account, user must confirm password to make sure the password typed in intially is the password he/she wants
 ==============================================================
+foleyM -- 2018-10-21 17:07
+--------------------------------------------------------------
+Read displays each edit on a seperate line.  Fixed bug where there was sometimes an error when trying to edit.
+==============================================================
+
