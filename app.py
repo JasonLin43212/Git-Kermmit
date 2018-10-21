@@ -93,7 +93,9 @@ def read():
 		cur= db.cursor()
 		fetchedPass= cur.execute("SELECT user from recent WHERE title = ?",(request.args.get("title"),)).fetchone()[0]
 		fetchedPass2= cur.execute("SELECT content from edits WHERE user = ? AND title=?",(fetchedPass,request.args.get("title"),)).fetchone()
-	return render_template("readStory.html", title=request.args.get("title"), story=fetchedPass2[0])
+	storyList=fetchedPass2[0].split("\n") ## was unable to insert <br> or /n into jinja templates so do this instead
+	###### could possibly do something so that you could see your own edit
+	return render_template("readStory.html", title=request.args.get("title"), story=storyList)
 
 @app.route("/unwrittenStories")
 def write():
@@ -151,7 +153,7 @@ def authEdit():
 		cur= db.cursor()
 		fetchedUser= cur.execute("SELECT user from recent WHERE title = ?",(givenTitle,)).fetchone()
 		print("fetchedUser:",fetchedUser)
-		if (len(fetchedUser) == 0):
+		if (fetchedUser is None or len(fetchedUser) == 0):
 			flash("It seems that that story hasn't been created yet...")
 			return redirect(url_for("homepage"))
 		allEditors=set([x[0] for x in cur.execute("SELECT user from edits WHERE title = ?",(givenTitle,)).fetchall()])
@@ -163,7 +165,7 @@ def authEdit():
 			pastStory=cur.execute("SELECT content from edits WHERE title = ? AND user = ?",(givenTitle,fetchedUser[0],)).fetchone()[0]
 			cur.execute("DELETE FROM recent WHERE title = ?",(givenTitle,))
 			cur.execute("INSERT INTO recent VALUES(?,?)",(givenTitle,username,))
-			cur.execute("INSERT INTO edits VALUES(?,?,?,?)",(username,givenTitle,givenStory,pastStory+givenStory,))
+			cur.execute("INSERT INTO edits VALUES(?,?,?,?)",(username,givenTitle,givenStory,pastStory+"\n"+givenStory,))
 	flash("Congrats you edited a story!")
 	return redirect(url_for("homepage"))
 
