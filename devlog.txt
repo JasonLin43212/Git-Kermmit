@@ -57,8 +57,11 @@ hanR -- 2018-10-19 2:03
 --------------------------------------------------------------
 Create account checks to see if username already exists in the DB. If it does, asks user to create another username.
 ==============================================================
-korozaA -- 2018-10-20 1:45
+korozaA -- 2018-10-20 13:45
 --------------------------------------------------------------
 User can now create stories. Titles and initial story contents stored in appropriate tables. 
 ==============================================================
-
+foleyM -- 2018-10-21 3:30
+--------------------------------------------------------------
+User can now view all unedited stories. They can also edit stories. Titles and story contents (all content and edit made) stored in appropriate tables. The recents table is updated as well.
+==============================================================
