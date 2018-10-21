@@ -80,13 +80,15 @@ def addAcct():
 
 @app.route("/read") #title =
 def read():
+	if not session.get("uname"):
+		return redirect(url_for("homepage"))
+	if not request.args.get("title"):
+		return redirect(url_for("homepage"))
 	print(request.args.get("title"))
 	with sqlite3.connect("discobandit.db") as db:
 		cur= db.cursor()
 		fetchedPass= cur.execute("SELECT user from recent WHERE title = ?",(request.args.get("title"),)).fetchone()[0]
 		fetchedPass2= cur.execute("SELECT content from edits WHERE user = ? AND title=?",(fetchedPass,request.args.get("title"),)).fetchone()
-	if not session.get("uname"):
-		return redirect(url_for("homepage"))
 	return render_template("readStory.html", title=request.args.get("title"), story=fetchedPass2[0])
 
 @app.route("/unwrittenStories")
@@ -113,7 +115,53 @@ def write():
 def edit(): # make sure that they cant edit one (check edited stories before allowing them to submit)
 	if not session.get("uname"):
 		return redirect(url_for("homepage"))
+	if not request.args.get("title"):
+		return redirect(url_for("homepage"))
+	username=session["uname"]
+	givenTitle=request.args.get("title")
+	with sqlite3.connect("discobandit.db") as db:
+		cur= db.cursor()
+		fetchedUser= cur.execute("SELECT user from recent WHERE title = ?",(givenTitle,)).fetchone()
+		print("fetchedUser:",fetchedUser)
+		if (len(fetchedUser) == 0):
+			flash("It seems that that story hasn't been created yet...")
+			return redirect(url_for("homepage"))
+		allEditors=set([x[0] for x in cur.execute("SELECT user from edits WHERE title = ?",(givenTitle,)).fetchall()])
+		print("allEditors:",allEditors)
+		if (username in allEditors):
+			flash("You have already edited this story")
+			return redirect(url_for("homepage"))
+		else:
+			pastEdit=cur.execute("SELECT content from edits WHERE title = ? AND user = ?",(givenTitle,fetchedUser[0],)).fetchone()[0]
+	return render_template("editStory.html", title=request.args.get("title"), story=pastEdit)
 
+
+@app.route("/editStoryAuth", methods=['POST','GET'])
+def authEdit():
+	if not session.get("uname"):
+		return redirect(url_for("homepage"))
+	givenTitle=request.form["storyTitle"]
+	givenStory=request.form["storyText"]
+	username=session["uname"]
+	with sqlite3.connect("discobandit.db") as db:
+		cur= db.cursor()
+		fetchedUser= cur.execute("SELECT user from recent WHERE title = ?",(givenTitle,)).fetchone()
+		print("fetchedUser:",fetchedUser)
+		if (len(fetchedUser) == 0):
+			flash("It seems that that story hasn't been created yet...")
+			return redirect(url_for("homepage"))
+		allEditors=set([x[0] for x in cur.execute("SELECT user from edits WHERE title = ?",(givenTitle,)).fetchall()])
+		print("allEditors:",allEditors)
+		if (username in allEditors):
+			flash("You have already edited this story")
+			return redirect(url_for("homepage"))
+		else:
+			pastStory=cur.execute("SELECT content from edits WHERE title = ? AND user = ?",(givenTitle,fetchedUser[0],)).fetchone()[0]
+			cur.execute("DELETE FROM recent WHERE title = ?",(givenTitle,))
+			cur.execute("INSERT INTO recent VALUES(?,?)",(givenTitle,username,))
+			cur.execute("INSERT INTO edits VALUES(?,?,?,?)",(username,givenTitle,givenStory,pastStory+givenStory,))
+	flash("Congrats you edited a story!")
+	return redirect(url_for("homepage"))
 
 @app.route("/create")
 def newStory():
@@ -123,6 +171,8 @@ def newStory():
 
 @app.route("/newStoryAuth", methods=['POST','GET'])
 def authStory():
+	if not session.get("uname"):
+		return redirect(url_for("homepage"))
 	givenTitle=request.form["storyTitle"]
 	givenStory=request.form["storyText"]
 	username=session["uname"]
@@ -138,7 +188,7 @@ def authStory():
 		else:
 			flash("STORY WITH THAT TITLE ALREADY EXISTS PLS TRY AGAIN")
 			return redirect(url_for("newStory"))
-	flash("congrats you added a story!")
+	flash("Congrats you added a story!")
 	return redirect(url_for("homepage"))
 
 
