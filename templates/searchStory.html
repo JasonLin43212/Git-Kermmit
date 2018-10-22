@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+{% block log %}Logout{% endblock %}
+{% block content %}
+<table border = "1">
+<tr>
+    <th>Story</th></tr>
+    {% for story in stories %}
+    <tr><td><a href = {{ url_for('read', title=story) }}>{{ story[0] }}</a></td></tr>
+    {% endfor %}
+    {# Maybe add num of words #}
+</table>
+
+{% endblock %}

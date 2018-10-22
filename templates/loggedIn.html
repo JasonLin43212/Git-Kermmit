@@ -4,8 +4,14 @@
 {% block log %}Logout{% endblock %}
 
 {% block content %}
+<form action="/search" method="POST">
+    Search Story: <input type="text" name="search" autofocus>
+    <button type ="submit">Search</button>
+</form>
+<br>
+<br>
 You are logged in as <b>{{user}}</b>
-<br><br><br>
+<br><br>
 
 <h2>Stories you have contributed to:</h2><br>
 {% if lenStories == 0 %}

@@ -205,8 +205,16 @@ def authStory():
 	return redirect(url_for("homepage"))
 
 
-
-
+@app.route("/search", methods = ['POST','GET'])
+def searchStory():
+	searchQuery=request.form["search"]
+	if not session.get("uname"):
+		return redirect(url_for("homepage"))
+	username=session["uname"]
+	with sqlite3.connect("discobandit.db") as db:
+		cur= db.cursor()
+		fetchedPass= cur.execute("SELECT title from edits WHERE title = ?",(searchQuery,)).fetchall()
+	return render_template("searchStory.html", user = username, stories = fetchedPass, lenStories = len(fetchedPass))
 
 if __name__ == "__main__":
     app.debug = True
