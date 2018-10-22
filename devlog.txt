@@ -37,15 +37,19 @@ foleyM -- 2018-10-17 14:54
 --------------------------------------------------------------
 Pushed Flask Starter Kit to repo + added few functions
 ==============================================================
-howladerM -- 2018-10-17 9:00
+howladerM -- 2018-10-17 21:00
 --------------------------------------------------------------
-Added html files and set up flask functionality for thsoe pages.
+Added html files and set up flask functionality for those pages.
 ==============================================================
 foleyM -- 2018-10-18 9:00
 --------------------------------------------------------------
 Edited devlog format
 ==============================================================
-hanR -- 2018-10-18 10:26
+korozaA -- 2018-10-18 20:45
+--------------------------------------------------------------
+Create db and added appropriate tables. Worked on Authentication. 
+==============================================================
+hanR -- 2018-10-18 22:26
 --------------------------------------------------------------
 DataBase now stores newly created users and when a user logs in, it checks to see if username/pass exists in db.
 ==============================================================
