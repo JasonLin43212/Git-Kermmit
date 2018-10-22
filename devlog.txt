@@ -73,4 +73,9 @@ foleyM -- 2018-10-21 17:07
 --------------------------------------------------------------
 Read displays each edit on a seperate line.  Fixed bug where there was sometimes an error when trying to edit.
 ==============================================================
+howladerM -- 2018-10-21 21:00
+--------------------------------------------------------------
+Fixed bug where users were not able to edit stories they've never contributed to. Added comments to app.py
+==============================================================
+
 
