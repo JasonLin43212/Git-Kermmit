@@ -74,7 +74,7 @@ def addAcct():
 		print(len(fetchedPass))
 		if (confirmPwd != givenPwd):
 			flash("Paswords don't match. Please try again!")
-			return redirect(url_for("createAcct"))		
+			return redirect(url_for("createAcct"))
 		elif (len(fetchedPass) == 0):
 			cur.execute("INSERT INTO users VALUES(?,?)",(givenUname,givenPwd))
 		else:
@@ -103,16 +103,16 @@ def write():
 		return redirect(url_for("homepage"))
 	with sqlite3.connect("discobandit.db") as db:
 		cur= db.cursor()
-		fetchedPass= cur.execute("SELECT title from edits WHERE user = ?",(session["uname"],)).fetchall()
-		written=set([x[0] for x in fetchedPass])
-		fetchedPass2= cur.execute("SELECT title from recent").fetchall()
-		allSt=[x[0] for x in fetchedPass2]
+		fetchedPass= cur.execute("SELECT title from edits WHERE user = ?",(session["uname"],)).fetchall() # fetches all titles in edits made by current user
+		written=set([x[0] for x in fetchedPass]) #converts list of all titles from edits from current user into a set
+		fetchedPass2= cur.execute("SELECT title from recent").fetchall() #all titles in recent
+		allSt=[x[0] for x in fetchedPass2] #converts list of all titles from recent into a set
 		unwritten=[]
-		for x in allSt:
+		for x in allSt: #for each title in recent
 			print(x)
-			if x in written:
-				continue
-			unwritten.append(x)
+			if x in written: #if a story from allSt is in written
+				continue #skips over that story (doesn't append it)
+			unwritten.append(x) ##add to unwritten the stories the user has not written to
 		print(unwritten)
 		return render_template("allStories.html", stories=unwritten, lenStories=len(unwritten))
 	return redirect(url_for("homepage"))
@@ -125,11 +125,13 @@ def edit(): # make sure that they cant edit one (check edited stories before all
 		return redirect(url_for("homepage"))
 	username=session["uname"]
 	givenTitle=request.args.get("title")
+	print("giventitle:",givenTitle)
 	with sqlite3.connect("discobandit.db") as db:
 		cur= db.cursor()
-		fetchedUser= cur.execute("SELECT user from recent WHERE title = ?",(givenTitle,)).fetchone()
+		fetchedUser= cur.execute("SELECT user from recent WHERE title = ?",(givenTitle,)).fetchone() #fetches the user who wrote the story
 		print("fetchedUser:",fetchedUser)
 		if (len(fetchedUser) == 0):
+			print("5 len of fetcheduser is 0")
 			flash("It seems that that story hasn't been created yet...")
 			return redirect(url_for("homepage"))
 		allEditors=set([x[0] for x in cur.execute("SELECT user from edits WHERE title = ?",(givenTitle,)).fetchall()])
@@ -139,6 +141,7 @@ def edit(): # make sure that they cant edit one (check edited stories before all
 			return redirect(url_for("homepage"))
 		else:
 			pastEdit=cur.execute("SELECT content from edits WHERE title = ? AND user = ?",(givenTitle,fetchedUser[0],)).fetchone()[0]
+	print("requesting title",request.args.get("title"))
 	return render_template("editStory.html", title=request.args.get("title"), story=pastEdit)
 
 
@@ -146,8 +149,11 @@ def edit(): # make sure that they cant edit one (check edited stories before all
 def authEdit():
 	if not session.get("uname"):
 		return redirect(url_for("homepage"))
-	givenTitle=request.form["storyTitle"]
-	givenStory=request.form["storyText"]
+	givenTitle=request.args.get("storyTitle")
+
+	print("title",givenTitle)
+	givenStory=request.args.get("storyText")
+	print("story",givenStory)
 	username=session["uname"]
 	with sqlite3.connect("discobandit.db") as db:
 		cur= db.cursor()
@@ -189,6 +195,7 @@ def authStory():
 		fetchedUser= cur.execute("SELECT user from recent WHERE title = ?",(givenTitle,)).fetchall()
 		#print(len(fetchedPass))
 		if (len(fetchedUser) == 0):
+			print("1: len is 0 in newStoryAuth")
 			cur.execute("INSERT INTO recent VALUES(?,?)",(givenTitle,username))
 			cur.execute("INSERT INTO edits VALUES(?,?,?,?)",(username,givenTitle,givenStory,givenStory))
 		else:

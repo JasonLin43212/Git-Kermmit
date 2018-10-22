@@ -5,10 +5,10 @@
 Choose story to edit:
 <h2> Edit a story </h2>
 <p>{{ story }}</p>
-<form action="/editStoryAuth" method="POST" id="form">
+<form action="/editStoryAuth" method="GET" id="form">
     <button type ="submit">Submit</button><br>
     <br>
-    <input type="hidden" name="storyTitle" value={{ title }}>
+    <input type="hidden" name="storyTitle" value="{{ title }}"">
     <br>
 </form>
 <p>Text:</p>
