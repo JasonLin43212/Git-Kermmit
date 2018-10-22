@@ -11,9 +11,9 @@ have your dependencies installed exclusively on it, not globally. (you don't nee
 Steps to create a venv:
 1. In a terminal, go to the folder in which you want to keep your venv
 2. Run `python3 -m venv EXVENV`
-  - We are using EXVENV as the name of the virtual enviornment; you can use any name you would like
+  1. We are using EXVENV as the name of the virtual enviornment; you can use any name you would like
 3. Activate your virtual enviornment by running `source EXVENV/bin/activate`
-  - Your computer's name will now be preceded by (EXVENV).  You are now inside of the virtual enviornment. 
+  1. Your computer's name will now be preceded by (EXVENV).  You are now inside of the virtual enviornment. 
 4. Install dependencies (see below)
 5. To exit the venv, run `deactivate`
 6. You can now activate your virtual enviornment from any cwd by running `source ~/ROUTE/TO/ENV/EXVENV/bin/activate`
