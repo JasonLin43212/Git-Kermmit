@@ -6,8 +6,8 @@
 <br>
 
 <form action="/authenticate" method="POST">
-    Username: <input type="text" name="username" autofocus><br>
-    Password: <input type="password" name="password"><br>
+    Username: <input type="text" name="username" autofocus placeholder="username"><br>
+    Password: <input type="password" name="password" placeholder="password"><br>
     <button type ="submit">Login</button>
 </form>
 {% if session["error"] == 1 %}

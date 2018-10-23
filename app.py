@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, session, url_for, redirect, flash, passlib
+from flask import Flask, render_template, request, session, url_for, redirect, flash
+import passlib
 import os # Used for random key
 import sqlite3
 from passlib.hash import pbkdf2_sha256
