@@ -19,7 +19,7 @@ Story-Time!!! A website where users come together to create stories.
 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
-foleyM -- 2018-10-17 12:10
+foleyM -- 2018-10-17 00:10
 --------------------------------------------------------------
 Added design PDF, made the DB explanation more clear (outlined table usage).
 ==============================================================
@@ -65,7 +65,7 @@ korozaA -- 2018-10-20 13:45
 --------------------------------------------------------------
 User can now create stories. Titles and initial story contents stored in appropriate tables. 
 ==============================================================
-foleyM -- 2018-10-21 3:30
+foleyM -- 2018-10-21 03:30
 --------------------------------------------------------------
 User can now view all unedited stories. They can also edit stories. Titles and story contents (all content and edit made) stored in appropriate tables. The recents table is updated as well.
 ==============================================================
@@ -89,7 +89,7 @@ korozaA -- 2018-10-22 18:33
 --------------------------------------------------------------
 Added missing comments,cleaned up some print statements,requested passlib and datetime
 ==============================================================
-foleyM -- 2018-10-23 12:18
+foleyM -- 2018-10-23 00:18
 --------------------------------------------------------------
 Edit readme
 ==============================================================
