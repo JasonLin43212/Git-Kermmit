@@ -1,6 +1,8 @@
 # Git-Kermmit
 PM: Aleksandra Koroza
+
 Maryann Foley, Mohtasim Howlader, Robin Han
+
 Soft Dev Project 1 (Story-Telling)
 
 ### Instructions for setup:
@@ -8,6 +10,7 @@ Soft Dev Project 1 (Story-Telling)
 #### Virtual enviornment:
 - It is important to use a venv because it creates an isolated python enviornment to run code.  It allows you to 
 have your dependencies installed exclusively on it, not globally. (you don't need root access!)  This is especially useful if you need to use 2 different versions of a package with 2 pieces of code.
+
 Steps to create a venv:
 1. In a terminal, go to the folder in which you want to keep your venv
 2. Run `python3 -m venv EXVENV`
@@ -22,8 +25,11 @@ Steps to create a venv:
 - sqlite3
 - flask
 - os
+
 Of these, flask is the only one not installed automatically when you install python3
+
 __NOTE:__ Activate your virtual enviornment before installing this!
+
 To install, run `pip install flask`
 
 ## Launch instructions:
