@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, session, url_for, redirect, flash
+from flask import Flask, render_template, request, session, url_for, redirect, flash, passlib
 import os # Used for random key
 import sqlite3
+from passlib.hash import pbkdf2_sha256
 
 
 DB_FILE="discobandit.db" # db used for this project. delete file if you want to remove all data/login info.
@@ -67,6 +68,7 @@ def createAcct():
 def addAcct():
 	givenUname=request.form["username"]
 	givenPwd=request.form["password"]
+	hash = pbkdf2_sha256.hash(givenPwd)
 	confirmPwd = request.form["confirm_password"] #prompts user twice
 	with sqlite3.connect("discobandit.db") as db:
 		cur= db.cursor()
