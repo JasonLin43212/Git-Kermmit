@@ -94,6 +94,11 @@ def read():
 		cur= db.cursor()
 		fetchedPass= cur.execute("SELECT user from recent WHERE title = ?",(request.args.get("title"),)).fetchone()[0]
 		fetchedPass2= cur.execute("SELECT content from edits WHERE user = ? AND title=?",(fetchedPass,request.args.get("title"),)).fetchone()
+		fetchedPass3= cur.execute("SELECT content from edits WHERE user = ? AND title=?",(session.get("uname"),request.args.get("title"),)).fetchone()
+	if (fetchedPass3 is None or len(fetchedPass3) == 0):
+			flash("YOU CAN'T READ " + request.args.get("title"))
+			return redirect(url_for("homepage"))
+
 	storyList=fetchedPass2[0].split("\n") ## was unable to insert <br> or /n into jinja templates so do this instead
 	###### could possibly do something so that you could see your own edit
 	return render_template("readStory.html", title=request.args.get("title"), story=storyList)
@@ -215,10 +220,19 @@ def searchStory():
 	if not session.get("uname"):
 		return redirect(url_for("homepage"))
 	username=session["uname"]
+
 	with sqlite3.connect("discobandit.db") as db:
 		cur= db.cursor()
-		fetchedPass= cur.execute("SELECT title from edits WHERE title = ?",(searchQuery,)).fetchall()
-	return render_template("searchStory.html", user = username, stories = fetchedPass, lenStories = len(fetchedPass))
+		fetchedTitles= cur.execute("SELECT title from recent WHERE title = ?",(searchQuery,)).fetchall()
+		print(fetchedTitles)
+		if (len(fetchedTitles) == 0):
+			flash("This Story Doesn't Exist!")
+			return redirect(url_for("homepage"))
+		fetchedPass3= cur.execute("SELECT content from edits WHERE user = ? AND title=?",(session.get("uname"),request.args.get("title"),)).fetchone()
+	if (fetchedPass3 is None or len(fetchedPass3) == 0):
+		flash("YOU CAN'T READ " + searchQuery)
+		return redirect(url_for("homepage"))
+	return render_template("searchStory.html", user = username, stories = fetchedTitles, lenStories = len(fetchedTitles))
 
 if __name__ == "__main__":
     app.debug = True
