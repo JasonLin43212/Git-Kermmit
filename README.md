@@ -3,9 +3,9 @@ PM: Aleksandra Koroza
 Maryann Foley, Mohtasim Howlader, Robin Han
 Soft Dev Project 1 (Story-Telling)
 
-### Instructions for launch
+### Instructions for setup:
 
-##### Virtual enviornment:
+#### Virtual enviornment:
 - It is important to use a venv because it creates an isolated python enviornment to run code.  It allows you to 
 have your dependencies installed exclusively on it, not globally. (you don't need root access!)  This is especially useful if you need to use 2 different versions of a package with 2 pieces of code.
 Steps to create a venv:
@@ -22,7 +22,13 @@ Steps to create a venv:
 - sqlite3
 - flask
 - os
+Of these, flask is the only one not installed automatically when you install python3
+__NOTE:__ Activate your virtual enviornment before installing this!
+To install, run `pip install flask`
 
-Uses python 3
+## Launch instructions:
+1. Activate your virtual enviornment
+2. Clone and cd into this repo
+3. Run `python3 app.py`
 
 
