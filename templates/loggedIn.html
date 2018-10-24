@@ -9,9 +9,11 @@
     <button type ="submit">Search</button>
 </form>
 <br>
-<br>
+
 You are logged in as <b>{{user}}</b>
 <br><br>
+<center>
+
 
 <h2>Stories you have contributed to:</h2><br>
 {% if lenStories == 0 %}
@@ -34,5 +36,6 @@ You are logged in as <b>{{user}}</b>
 <br><br><br>
 
 <a href="/unwrittenStories">View stories you can add to</a>
+</center>
 
 {% endblock %}
