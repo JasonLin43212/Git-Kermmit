@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, session, url_for, redirect, flash
-import passlib
 import os # Used for random key
 import sqlite3
+import passlib
 from passlib.hash import pbkdf2_sha256
+import datetime
 
 
 DB_FILE="discobandit.db" # db used for this project. delete file if you want to remove all data/login info.
@@ -14,8 +15,8 @@ app = Flask(__name__)
 app.secret_key=os.urandom(32)# 32 bits of random data as a string
 
 # Creation of three tables as specified in design.pdf. Only created if missing
-c.execute("CREATE TABLE if not exists edits(user TEXT, title TEXT, edit_made TEXT, content TEXT)")
-c.execute("CREATE TABLE if not exists recent(title TEXT, user TEXT)")
+c.execute("CREATE TABLE if not exists edits(user TEXT, title TEXT, edit_made TEXT, content TEXT, crtime TEXT)")
+c.execute("CREATE TABLE if not exists recent(title TEXT, user TEXT, crtime TEXT)")
 c.execute("CREATE TABLE if not exists users(user TEXT, password TEXT)")
 
 # Root route. Displays appropriate homepage based on whether user is logged in.
@@ -42,10 +43,12 @@ def callback():
 	givenPwd=request.form["password"]
 	with sqlite3.connect("discobandit.db") as db:
 		cur= db.cursor()
-		fetchedPass= cur.execute("SELECT password from users WHERE user = ?",(givenUname,)).fetchall()
-		if fetchedPass:
+		fetchedHash= cur.execute("SELECT password from users WHERE user = ?",(givenUname,)).fetchall()
+		if fetchedHash:
 			print("it exists")
-			if fetchedPass[0][0] == givenPwd:# access first tuple of tuples
+			if pbkdf2_sha256.verify(givenPwd, fetchedHash[0][0]):
+				print(fetchedHash)
+				# access first tuple of tuples
 				#fix since fetchall returns a tuple of tuples
 				session["uname"]= givenUname
 				if session.get("error"):# for when there is no error
@@ -59,7 +62,7 @@ def callback():
 			session["error"]=1
 			return redirect(url_for("homepage"))#error 1 means username was wrong
 
-# route used upon clicksing create user button
+# route used upon clicking create user button
 @app.route("/newUser", methods=['POST','GET'])
 def createAcct():
 	return render_template("newUser.html")
@@ -69,8 +72,8 @@ def createAcct():
 def addAcct():
 	givenUname=request.form["username"]
 	givenPwd=request.form["password"]
-	hash = pbkdf2_sha256.hash(givenPwd)
 	confirmPwd = request.form["confirm_password"] #prompts user twice
+	hash = pbkdf2_sha256.hash(givenPwd)
 	with sqlite3.connect("discobandit.db") as db:
 		cur= db.cursor()
 		fetchedPass= cur.execute("SELECT password from users WHERE user = ?",(givenUname,)).fetchall()
@@ -79,7 +82,7 @@ def addAcct():
 			flash("Paswords don't match. Please try again!")
 			return redirect(url_for("createAcct"))
 		elif (len(fetchedPass) == 0):
-			cur.execute("INSERT INTO users VALUES(?,?)",(givenUname,givenPwd))
+			cur.execute("INSERT INTO users VALUES(?,?)",(givenUname,hash)) #inserts hash version of password
 		else:
 			flash("USER NAME ALREADY EXISTS PLS TRY AGAIN")
 			return redirect(url_for("createAcct"))
@@ -95,6 +98,7 @@ def read():
 	print(request.args.get("title"))
 	with sqlite3.connect("discobandit.db") as db:
 		cur= db.cursor()
+		givenTitle=request.args.get("title")
 		fetchedPass= cur.execute("SELECT user from recent WHERE title = ?",(request.args.get("title"),)).fetchone()[0]
 		fetchedPass2= cur.execute("SELECT content from edits WHERE user = ? AND title=?",(fetchedPass,request.args.get("title"),)).fetchone()
 		fetchedPass3= cur.execute("SELECT content from edits WHERE user = ? AND title=?",(session.get("uname"),request.args.get("title"),)).fetchone()
@@ -104,7 +108,8 @@ def read():
 
 	storyList=fetchedPass2[0].split("\n") ## was unable to insert <br> or /n into jinja templates so do this instead
 	###### could possibly do something so that you could see your own edit
-	return render_template("readStory.html", title=request.args.get("title"), story=storyList)
+	fetchedTime=cur.execute("SELECT crtime from recent WHERE title = ?",(givenTitle,)).fetchone()[0]
+	return render_template("readStory.html", title=request.args.get("title"), story=storyList,timecr= fetchedTime)
 
 # route used to determine which story a user can add to.
 @app.route("/unwrittenStories")
@@ -152,8 +157,9 @@ def edit(): # make sure that they cant edit one (check edited stories before all
 			return redirect(url_for("homepage"))
 		else:
 			pastEdit=cur.execute("SELECT content from edits WHERE title = ? AND user = ?",(givenTitle,fetchedUser[0],)).fetchone()[0]
+			fetchedTime=cur.execute("SELECT crtime from recent WHERE title = ? AND user = ?",(givenTitle,fetchedUser[0],)).fetchone()[0]
 	print("requesting title",request.args.get("title"))
-	return render_template("editStory.html", title=request.args.get("title"), story=pastEdit) #shows user only last edit
+	return render_template("editStory.html", title=request.args.get("title"), story=pastEdit, timecr=fetchedTime) #renders template and shows user only last edit
 
 # checks if user can edit and, if so, updates tables with user input
 @app.route("/editStoryAuth", methods=['POST','GET'])
@@ -181,8 +187,8 @@ def authEdit():
 		else:
 			pastStory=cur.execute("SELECT content from edits WHERE title = ? AND user = ?",(givenTitle,fetchedUser[0],)).fetchone()[0]
 			cur.execute("DELETE FROM recent WHERE title = ?",(givenTitle,)) # row with containing given title
-			cur.execute("INSERT INTO recent VALUES(?,?)",(givenTitle,username,)) # update with correct last author of story
-			cur.execute("INSERT INTO edits VALUES(?,?,?,?)",(username,givenTitle,givenStory,pastStory+"\n"+givenStory,)) #update edits with new and improved story
+			cur.execute("INSERT INTO recent VALUES(?,?,?)",(givenTitle,username,str(datetime.datetime.now()),)) # update with correct last author of story
+			cur.execute("INSERT INTO edits VALUES(?,?,?,?,?)",(username,givenTitle,givenStory,pastStory+"\n"+givenStory,str(datetime.datetime.now()),)) #update edits with new and improved story
 	flash("Congrats you edited a story!")
 	return redirect(url_for("homepage"))
 
@@ -208,8 +214,8 @@ def authStory():
 		#print(len(fetchedPass))
 		if (len(fetchedUser) == 0):
 			print("1: len is 0 in newStoryAuth")
-			cur.execute("INSERT INTO recent VALUES(?,?)",(givenTitle,username))
-			cur.execute("INSERT INTO edits VALUES(?,?,?,?)",(username,givenTitle,givenStory,givenStory))
+			cur.execute("INSERT INTO recent VALUES(?,?,?)",(givenTitle,username,str(datetime.datetime.now()),))
+			cur.execute("INSERT INTO edits VALUES(?,?,?,?,?)",(username,givenTitle,givenStory,givenStory,str(datetime.datetime.now()),))
 		else:
 			flash("STORY WITH THAT TITLE ALREADY EXISTS PLS TRY AGAIN")
 			return redirect(url_for("newStory"))
