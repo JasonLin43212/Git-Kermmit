@@ -43,3 +43,17 @@ def getEditTime(title):
 		cur= db.cursor()
 		time=cur.execute("SELECT crtime from recent WHERE title = ?",(title,)).fetchone()[0]
 	return time
+
+def getAllStories():
+	with sqlite3.connect("discobandit.db") as db:
+		cur= db.cursor()
+		stories=cur.execute("SELECT title from recent").fetchall() #all titles in recent
+	return stories
+
+def getAllEditors(title):
+	with sqlite3.connect("discobandit.db") as db:
+		cur= db.cursor()
+		editors=cur.execute("SELECT user from edits WHERE title = ?",(title,)).fetchall()
+	return editors
+
+

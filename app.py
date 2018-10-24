@@ -101,21 +101,17 @@ def read():
 def write():
 	if not session.get("uname"):
 		return redirect(url_for("homepage"))
-	with sqlite3.connect("discobandit.db") as db:
-		cur= db.cursor()
-		fetchedPass= cur.execute("SELECT title from edits WHERE user = ?",(session["uname"],)).fetchall() # fetches all titles in edits made by current user
-		written=set([x[0] for x in fetchedPass]) #converts tuple of all titles from edits from current user into a set
-		fetchedPass2= cur.execute("SELECT title from recent").fetchall() #all titles in recent
-		allSt=[x[0] for x in fetchedPass2] #converts tuple of all titles from recent into a list
-		unwritten=[]
-		for x in allSt: #for each title in recent
-			print(x)
-			if x in written: #if a story from allSt is in written, constant look-up time
-				continue #skips over that story (doesn't append it)
-			unwritten.append(x) ##add to unwritten the stories the user has not written to
-		print(unwritten)
-		return render_template("allStories.html", stories=unwritten, lenStories=len(unwritten))
-	return redirect(url_for("homepage"))
+	edited =db.getEdits(session["uname"])
+	edited = set(x[0] for x in edited) #converts tuple of all titles from edits from current user into a set
+	allStories=db.getAllStories()
+	allStories=[x[0] for x in allStories] #converts tuple of all titles from recent into a list
+	unwritten=[]
+	for story in allStories:
+		if story in edited: #if a story from allStories in in edited, constant look-up time
+			continue #skips over that story (doesn't append it)
+		unwritten.append(x) ##add to unwritten the stories the user has not written to
+	print(unwritten)
+	return render_template("allStories.html", stories=unwritten, lenStories=len(unwritten))
 
 #used for diplaying which stories the user can contribute to and access editing stage
 @app.route("/edit")
@@ -127,22 +123,19 @@ def edit(): # make sure that they cant edit one (check edited stories before all
 	username=session["uname"]
 	givenTitle=request.args.get("title")
 	print("giventitle:",givenTitle)
-	with sqlite3.connect("discobandit.db") as db:
-		cur= db.cursor()
-		fetchedUser= cur.execute("SELECT user from recent WHERE title = ?",(givenTitle,)).fetchone() #fetches the user who wrote the story
-		print("fetchedUser:",fetchedUser)
-		if (len(fetchedUser) == 0):
-			print("5 len of fetcheduser is 0")
-			flash("It seems that that story hasn't been created yet...")
-			return redirect(url_for("homepage"))
-		allEditors=set([x[0] for x in cur.execute("SELECT user from edits WHERE title = ?",(givenTitle,)).fetchall()]) # creates set of all authors of given story
-		print("allEditors:",allEditors)
-		if (username in allEditors): #to check if user already edite the story
-			flash("You have already edited this story")
-			return redirect(url_for("homepage"))
-		else:
-			pastEdit=cur.execute("SELECT content from edits WHERE title = ? AND user = ?",(givenTitle,fetchedUser[0],)).fetchone()[0]
-			fetchedTime=cur.execute("SELECT crtime from recent WHERE title = ? AND user = ?",(givenTitle,fetchedUser[0],)).fetchone()[0]
+	fetchedUser = db.getRecent(givenTitle)
+	print("fetchedUser:",fetchedUser)
+	if fetchedUser is None or len(fetchedUser) == 0:
+		flash("It seems that that story hasn't been created yet...")
+		return redirect(url_for("homepage"))
+	allEditors=set([x[0] for x in db.getAllEditors(givenTitle)]) # creates set of all authors of given story
+	print("allEditors:",allEditors)
+	if (username in allEditors): #to check if user already edite the story
+		flash("You have already edited this story")
+		return redirect(url_for("homepage"))
+	else:
+		pastEdit=cur.execute("SELECT content from edits WHERE title = ? AND user = ?",(givenTitle,fetchedUser[0],)).fetchone()[0]
+		fetchedTime=cur.execute("SELECT crtime from recent WHERE title = ? AND user = ?",(givenTitle,fetchedUser[0],)).fetchone()[0]
 	print("requesting title",request.args.get("title"))
 	return render_template("editStory.html", title=request.args.get("title"), story=pastEdit, timecr=fetchedTime) #renders template and shows user only last edit
 
