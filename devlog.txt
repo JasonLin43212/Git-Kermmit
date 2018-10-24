@@ -101,3 +101,7 @@ korozaA -- 2018-10-23 21:42
 -------------------------------------------------------------
 Added timestamp feature when viewing reading and editing stories. Code now stores hashed passwords using passlib.
 ==============================================================
+howladerM -- 2018-10-24 13:23
+--------------------------------------------------------------
+Centered login and logged in homepages, added comments to app.py.
+==============================================================
