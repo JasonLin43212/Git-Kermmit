@@ -6,18 +6,8 @@ from passlib.hash import pbkdf2_sha256
 import datetime
 
 
-DB_FILE="discobandit.db" # db used for this project. delete file if you want to remove all data/login info.
-
-db = sqlite3.connect(DB_FILE) # Open if file exists, otherwise create
-c = db.cursor()               # Facilitate db operations
-
 app = Flask(__name__)
 app.secret_key=os.urandom(32)# 32 bits of random data as a string
-
-# Creation of three tables as specified in design.pdf. Only created if missing
-c.execute("CREATE TABLE if not exists edits(user TEXT, title TEXT, edit_made TEXT, content TEXT, crtime TEXT)")
-c.execute("CREATE TABLE if not exists recent(title TEXT, user TEXT, crtime TEXT)")
-c.execute("CREATE TABLE if not exists users(user TEXT, password TEXT)")
 
 # Root route. Displays appropriate homepage based on whether user is logged in.
 @app.route("/")
