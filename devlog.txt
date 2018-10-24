@@ -29,7 +29,7 @@ Team reflection on Programming Sucks
 1) Given that each team member has different strengths and areas of expertise, we must do our best to make sure that everyone is on the same page before implementing any major feature. Clear communication and delineation of tasks is crucial for building our sturdy bridge.
 2) Master the basics before venturing into the deep end. You must build and hone your skills before treading further into the bottomless pit that is the set of all computer science tools available on the Internet. As a team, we will try to limit confusion by sticking to simplicity.
 ==============================================================
-hanR -- 2018-10-17 2:44
+hanR -- 2018-10-17 14:44
 --------------------------------------------------------------
 Edited devlog format
 ==============================================================
@@ -53,11 +53,11 @@ hanR -- 2018-10-18 22:26
 --------------------------------------------------------------
 DataBase now stores newly created users and when a user logs in, it checks to see if username/pass exists in db.
 ==============================================================
-hanR -- 2018-10-18 11:00
+hanR -- 2018-10-18 23:00
 --------------------------------------------------------------
 Fixed urldirect for newly created users. Other login features not yet included.
 ==============================================================
-hanR -- 2018-10-19 2:03
+hanR -- 2018-10-19 14:03
 --------------------------------------------------------------
 Create account checks to see if username already exists in the DB. If it does, asks user to create another username.
 ==============================================================
@@ -65,7 +65,7 @@ korozaA -- 2018-10-20 13:45
 --------------------------------------------------------------
 User can now create stories. Titles and initial story contents stored in appropriate tables.
 ==============================================================
-foleyM -- 2018-10-21 03:30
+foleyM -- 2018-10-21 15:30
 --------------------------------------------------------------
 User can now view all unedited stories. They can also edit stories. Titles and story contents (all content and edit made) stored in appropriate tables. The recents table is updated as well.
 ==============================================================
@@ -93,11 +93,11 @@ hanR -- 2018-10-23 13:56
 --------------------------------------------------------------
 Fixed search story bugs and flashing messages for reading stories.
 ==============================================================
-foleyM -- 2018-10-23 13:56
+foleyM -- 2018-10-23 13:58
 --------------------------------------------------------------
 Replace text in text boxes with placeholder
 ==============================================================
-korozaA -- 2018-10-17 21:42
+korozaA -- 2018-10-23 21:42
 -------------------------------------------------------------
 Added timestamp feature when viewing reading and editing stories. Code now stores hashed passwords using passlib.
 ==============================================================
