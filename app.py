@@ -1,10 +1,13 @@
 from flask import Flask, render_template, request, session, url_for, redirect, flash
+import util.db as db
 import os # Used for random key
 import sqlite3
 import passlib
 from passlib.hash import pbkdf2_sha256
 import datetime
 
+
+db.create()
 
 app = Flask(__name__)
 app.secret_key=os.urandom(32)# 32 bits of random data as a string
@@ -14,9 +17,7 @@ app.secret_key=os.urandom(32)# 32 bits of random data as a string
 def homepage():
 	if session.get("uname"):
 		username = session["uname"]
-		with sqlite3.connect("discobandit.db") as db: # Allows connection to db
-			cur= db.cursor()
-			fetchedPass= cur.execute("SELECT title from edits WHERE user = ?",(username,)).fetchall()
+		fetchedPass= db.getEdits(session["uname"])
 		return render_template("loggedIn.html", user = username, stories = fetchedPass, lenStories = len(fetchedPass))
 	return render_template("login.html",Title = 'Login')
 
@@ -31,26 +32,24 @@ def logout():
 def callback():
 	givenUname=request.form["username"]
 	givenPwd=request.form["password"]
-	with sqlite3.connect("discobandit.db") as db:
-		cur= db.cursor()
-		fetchedHash= cur.execute("SELECT password from users WHERE user = ?",(givenUname,)).fetchall()
-		if fetchedHash:
-			print("it exists")
-			if pbkdf2_sha256.verify(givenPwd, fetchedHash[0][0]):
-				print(fetchedHash)
-				# access first tuple of tuples
-				#fix since fetchall returns a tuple of tuples
-				session["uname"]= givenUname
-				if session.get("error"):# for when there is no error
-					session.pop("error")
-				return redirect(url_for("homepage"))
-			else:
-				session["error"]=2# error 2 means password was wrong
-				return redirect(url_for("homepage"))
+	fetchedHash=db.getPwd(givenUname)
+	if fetchedHash:
+		print("it exists")
+		if pbkdf2_sha256.verify(givenPwd, fetchedHash[0][0]):
+			print(fetchedHash)
+			# access first tuple of tuples
+			#fix since fetchall returns a tuple of tuples
+			session["uname"]= givenUname
+			if session.get("error"):# for when there is no error
+				session.pop("error")
+			return redirect(url_for("homepage"))
 		else:
-			print("it doesn't")
-			session["error"]=1
-			return redirect(url_for("homepage"))#error 1 means username was wrong
+			session["error"]=2# error 2 means password was wrong
+			return redirect(url_for("homepage"))
+	else:
+		print("it doesn't")
+		session["error"]=1
+		return redirect(url_for("homepage"))#error 1 means username was wrong
 
 # route used upon clicking create user button
 @app.route("/newUser", methods=['POST','GET'])
@@ -64,18 +63,16 @@ def addAcct():
 	givenPwd=request.form["password"]
 	confirmPwd = request.form["confirm_password"] #prompts user twice
 	hash = pbkdf2_sha256.hash(givenPwd)
-	with sqlite3.connect("discobandit.db") as db:
-		cur= db.cursor()
-		fetchedPass= cur.execute("SELECT password from users WHERE user = ?",(givenUname,)).fetchall()
-		print(len(fetchedPass))#diagnostic
-		if (confirmPwd != givenPwd):
-			flash("Paswords don't match. Please try again!")
-			return redirect(url_for("createAcct"))
-		elif (len(fetchedPass) == 0):
-			cur.execute("INSERT INTO users VALUES(?,?)",(givenUname,hash)) #inserts hash version of password
-		else:
-			flash("USER NAME ALREADY EXISTS PLS TRY AGAIN")
-			return redirect(url_for("createAcct"))
+	fetchedPass=db.getPwd(givenUname)
+	print(len(fetchedPass))#diagnostic
+	if (confirmPwd != givenPwd):
+		flash("Paswords don't match. Please try again!")
+		return redirect(url_for("createAcct"))
+	elif (len(fetchedPass) == 0):
+		db.newAcct(givenUname,hash)
+	else:
+		flash("USER NAME ALREADY EXISTS PLS TRY AGAIN")
+		return redirect(url_for("createAcct"))
 	return redirect(url_for("homepage"))
 
 # route used to fetch last line contributed to story and to select titles user can contribute to
@@ -86,19 +83,17 @@ def read():
 	if not request.args.get("title"):
 		return redirect(url_for("homepage"))
 	print(request.args.get("title"))
-	with sqlite3.connect("discobandit.db") as db:
-		cur= db.cursor()
-		givenTitle=request.args.get("title")
-		fetchedPass= cur.execute("SELECT user from recent WHERE title = ?",(request.args.get("title"),)).fetchone()[0]
-		fetchedPass2= cur.execute("SELECT content from edits WHERE user = ? AND title=?",(fetchedPass,request.args.get("title"),)).fetchone()
-		fetchedPass3= cur.execute("SELECT content from edits WHERE user = ? AND title=?",(session.get("uname"),request.args.get("title"),)).fetchone()
-	if (fetchedPass3 is None or len(fetchedPass3) == 0):
+	givenTitle=request.args.get("title")
+	fetchedUser=db.getRecent(givenTitle)
+	fetchedEdit=db.getEdit(fetchedUser,givenTitle)
+	fetchedHasEdited= db.getEdit(session.get("uname"),givenTitle)
+	if (fetchedHasEdited is None or len(fetchedHasEdited) == 0):
 			flash("YOU CAN'T READ " + request.args.get("title"))
 			return redirect(url_for("homepage"))
 
-	storyList=fetchedPass2[0].split("\n") ## was unable to insert <br> or /n into jinja templates so do this instead
+	storyList=fetchedEdit[0].split("\n") ## was unable to insert <br> or /n into jinja templates so do this instead
 	###### could possibly do something so that you could see your own edit
-	fetchedTime=cur.execute("SELECT crtime from recent WHERE title = ?",(givenTitle,)).fetchone()[0]
+	fetchedTime=db.getEditTime(givenTitle)
 	return render_template("readStory.html", title=request.args.get("title"), story=storyList,timecr= fetchedTime)
 
 # route used to determine which story a user can add to.
