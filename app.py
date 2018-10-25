@@ -189,6 +189,14 @@ def authStory():
 	username=session["uname"]
 	fetchedUser = db.getRecent(givenTitle)
 	#print(len(fetchedPass))
+	print(givenTitle)
+	print(givenStory)
+	if len(givenTitle) == 0:
+		flash("PLEASE ENTER A TITLE!")
+		return redirect(url_for("newStory"))
+	if len(givenStory) == 0:
+		flash("PLEASE ADD TEXT TO YOUR STORY")
+		return redirect(url_for("newStory"))
 	if fetchedUser is None or len(fetchedUser) == 0:
 		print("len is 0 in newStoryAuth")
 		time = str(datetime.datetime.now())
@@ -212,7 +220,7 @@ def searchStory():
 	if (fetchedStories is None or len(fetchedStories) == 0):
 		flash("This Story Doesn't Exist!")
 		return redirect(url_for("homepage"))
-	fetchedEdit= db.getEdit(session.get("uname"),searchQuery) 
+	fetchedEdit= db.getEdit(session.get("uname"),searchQuery)
 	print(fetchedEdit)
 	if (fetchedEdit is None or len(fetchedEdit) == 0):
 		return redirect(url_for("edit", title = searchQuery))
@@ -221,5 +229,3 @@ def searchStory():
 if __name__ == "__main__":
     app.debug = True
     app.run()
-
-
