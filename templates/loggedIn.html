@@ -30,12 +30,15 @@ You are logged in as <b>{{user}}</b>
 {% endif %}
 <br>
 
-<a href="/create">Create a new story</a>
-
+<form action="/create" method="POST">
+    <button type ="submit">Create A New Story </button>
+</form>
 
 <br><br><br>
 
-<a href="/unwrittenStories">View stories you can add to</a>
+<form action="/unwrittenStories" method="POST">
+    <button type ="submit">View Stories You Can Add To</button>
+</form>
 </center>
 
 {% endblock %}

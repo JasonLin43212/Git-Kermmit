@@ -11,7 +11,9 @@
     {% endblock %}
 </head>
 <body>
-    <div align ="right"><a href="/logout">{% block log %} {% endblock %}</a></div>
+  <form action="/logout" method="POST">
+      <div align ="right"><button type ="submit">{% block log %} {% endblock %}</button></div>
+  </form>
 
     <font color="red"> {% set msgs = get_flashed_messages() %}
         {% for each in msgs %}
