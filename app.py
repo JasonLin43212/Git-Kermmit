@@ -22,10 +22,12 @@ def homepage():
 	return render_template("login.html",Title = 'Login')
 
 #Logout route. If user is logged in, they can logout from any page.
-@app.route('/logout')
+@app.route('/logout',methods=['POST','GET'])
 def logout():
-    session.pop('uname') #ends session
-    return redirect(url_for('homepage')) #goes to home, where you can login
+	if not session.get("uname"):
+		return redirect(url_for("homepage"))
+	session.pop('uname') #ends session
+	return redirect(url_for('homepage')) #goes to home, where you can login
 
 # Authentication route.
 @app.route("/authenticate", methods=['POST'])
@@ -101,7 +103,7 @@ def read():
 	return render_template("readStory.html", title=request.args.get("title"), story=storyList,timecr= fetchedTime)
 
 # route used to determine which story a user can add to.
-@app.route("/unwrittenStories")
+@app.route("/unwrittenStories",methods=['POST','GET'])
 def write():
 	if not session.get("uname"):
 		return redirect(url_for("homepage"))
@@ -173,11 +175,12 @@ def authEdit():
 	return redirect(url_for("homepage"))
 
 # returns page for creating a story if logged in
-@app.route("/create")
+@app.route("/create", methods=['POST','GET'])
 def newStory():
 	if not session.get("uname"):
 		return redirect(url_for("homepage"))
 	return render_template("createStory.html")
+
 
 # updates table with new story if story does not alread exist and if user is logged in
 @app.route("/newStoryAuth", methods=['POST','GET'])
@@ -189,6 +192,14 @@ def authStory():
 	username=session["uname"]
 	fetchedUser = db.getRecent(givenTitle)
 	#print(len(fetchedPass))
+	print(givenTitle)
+	print(givenStory)
+	if len(givenTitle) == 0:
+		flash("PLEASE ENTER A TITLE!")
+		return redirect(url_for("newStory"))
+	if len(givenStory) == 0:
+		flash("PLEASE ADD TEXT TO YOUR STORY")
+		return redirect(url_for("newStory"))
 	if fetchedUser is None or len(fetchedUser) == 0:
 		print("len is 0 in newStoryAuth")
 		time = str(datetime.datetime.now())
@@ -212,7 +223,7 @@ def searchStory():
 	if (fetchedStories is None or len(fetchedStories) == 0):
 		flash("This Story Doesn't Exist!")
 		return redirect(url_for("homepage"))
-	fetchedEdit= db.getEdit(session.get("uname"),searchQuery) 
+	fetchedEdit= db.getEdit(session.get("uname"),searchQuery)
 	print(fetchedEdit)
 	if (fetchedEdit is None or len(fetchedEdit) == 0):
 		return redirect(url_for("edit", title = searchQuery))
@@ -221,5 +232,3 @@ def searchStory():
 if __name__ == "__main__":
     app.debug = True
     app.run()
-
-
