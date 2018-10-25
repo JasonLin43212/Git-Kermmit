@@ -29,7 +29,7 @@ def newAcct(givenUname,givenPwd):
 def getRecent(givenTitle):
 	with sqlite3.connect("discobandit.db") as db:
 		cur= db.cursor()
-		fetchedPass= cur.execute("SELECT user from recent WHERE title = ?",(givenTitle,)).fetchone()[0]
+		fetchedPass= cur.execute("SELECT user from recent WHERE title = ?",(givenTitle,)).fetchone()
 	return fetchedPass
 
 def getEdit(user,title):
@@ -56,4 +56,28 @@ def getAllEditors(title):
 		editors=cur.execute("SELECT user from edits WHERE title = ?",(title,)).fetchall()
 	return editors
 
+def getEditMade(user,title):
+	with sqlite3.connect("discobandit.db") as db:
+		cur= db.cursor()
+		edit= cur.execute("SELECT edit_made from edits WHERE user = ? AND title=?",(user,title,)).fetchone()
+	return edit
 
+def makeEdit(title,username,time,givenStory,pastStory):
+	with sqlite3.connect("discobandit.db") as db:
+		cur= db.cursor()
+		cur.execute("DELETE FROM recent WHERE title = ?",(title,)) # row with containing given title
+		cur.execute("INSERT INTO recent VALUES(?,?,?)",(title,username,time,)) # update with correct last author of story
+		cur.execute("INSERT INTO edits VALUES(?,?,?,?)",(username,title,givenStory,pastStory+"\n"+"\n"+givenStory,)) #update edits with new and improved story
+
+def newStory(title,username,time,givenStory):
+	with sqlite3.connect("discobandit.db") as db:
+		cur= db.cursor()
+		cur.execute("INSERT INTO recent VALUES(?,?,?)",(title,username,time,))
+		cur.execute("INSERT INTO edits VALUES(?,?,?,?)",(username,title,givenStory,givenStory,))
+
+def checkTitle(title):
+	with sqlite3.connect("discobandit.db") as db:
+		cur= db.cursor()
+		fetchedTitles = cur.execute("SELECT title from recent WHERE title = ?",(title,)).fetchall()
+	return fetchedTitles
+	

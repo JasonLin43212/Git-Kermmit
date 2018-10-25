@@ -85,11 +85,15 @@ def read():
 	print(request.args.get("title"))
 	givenTitle=request.args.get("title")
 	fetchedUser=db.getRecent(givenTitle)
+	if fetchedUser is None or len(fetchedUser)==0:
+		flash(request.args.get("title") + " has not been created.")
+		return redirect(url_for("homepage"))
+	fetchedUser=fetchedUser[0]
 	fetchedEdit=db.getEdit(fetchedUser,givenTitle)
 	fetchedHasEdited= db.getEdit(session.get("uname"),givenTitle)
 	if (fetchedHasEdited is None or len(fetchedHasEdited) == 0):
-			flash("YOU CAN'T READ " + request.args.get("title"))
-			return redirect(url_for("homepage"))
+		flash("YOU CAN'T READ " + request.args.get("title"))
+		return redirect(url_for("homepage"))
 
 	storyList=fetchedEdit[0].split("\n") ## was unable to insert <br> or /n into jinja templates so do this instead
 	###### could possibly do something so that you could see your own edit
@@ -102,14 +106,14 @@ def write():
 	if not session.get("uname"):
 		return redirect(url_for("homepage"))
 	edited =db.getEdits(session["uname"])
-	edited = set(x[0] for x in edited) #converts tuple of all titles from edits from current user into a set
+	edited = set([x[0] for x in edited]) #converts tuple of all titles from edits from current user into a set
 	allStories=db.getAllStories()
 	allStories=[x[0] for x in allStories] #converts tuple of all titles from recent into a list
 	unwritten=[]
 	for story in allStories:
 		if story in edited: #if a story from allStories in in edited, constant look-up time
 			continue #skips over that story (doesn't append it)
-		unwritten.append(x) ##add to unwritten the stories the user has not written to
+		unwritten.append(story) ##add to unwritten the stories the user has not written to
 	print(unwritten)
 	return render_template("allStories.html", stories=unwritten, lenStories=len(unwritten))
 
@@ -128,16 +132,17 @@ def edit(): # make sure that they cant edit one (check edited stories before all
 	if fetchedUser is None or len(fetchedUser) == 0:
 		flash("It seems that that story hasn't been created yet...")
 		return redirect(url_for("homepage"))
+	fetchedUser=fetchedUser[0]
 	allEditors=set([x[0] for x in db.getAllEditors(givenTitle)]) # creates set of all authors of given story
 	print("allEditors:",allEditors)
 	if (username in allEditors): #to check if user already edite the story
 		flash("You have already edited this story")
 		return redirect(url_for("homepage"))
 	else:
-		pastEdit=cur.execute("SELECT content from edits WHERE title = ? AND user = ?",(givenTitle,fetchedUser[0],)).fetchone()[0]
-		fetchedTime=cur.execute("SELECT crtime from recent WHERE title = ? AND user = ?",(givenTitle,fetchedUser[0],)).fetchone()[0]
+		pastEdit=db.getEditMade(fetchedUser,givenTitle)
+		fetchedTime=db.getEditTime(givenTitle)
 	print("requesting title",request.args.get("title"))
-	return render_template("editStory.html", title=request.args.get("title"), story=pastEdit, timecr=fetchedTime) #renders template and shows user only last edit
+	return render_template("editStory.html", title=givenTitle, story=pastEdit, timecr=fetchedTime) #renders template and shows user only last edit
 
 # checks if user can edit and, if so, updates tables with user input
 @app.route("/editStoryAuth", methods=['POST','GET'])
@@ -150,24 +155,21 @@ def authEdit():
 	givenStory=request.args.get("storyText")
 	print("story",givenStory)
 	username=session["uname"]
-	with sqlite3.connect("discobandit.db") as db:
-		cur= db.cursor()
-		fetchedUser= cur.execute("SELECT user from recent WHERE title = ?",(givenTitle,)).fetchone() #get last author of story
-		print("fetchedUser:",fetchedUser)
-		if (fetchedUser is None or len(fetchedUser) == 0):
-			flash("It seems that that story hasn't been created yet...")
-			return redirect(url_for("homepage"))
-		allEditors=set([x[0] for x in cur.execute("SELECT user from edits WHERE title = ?",(givenTitle,)).fetchall()]) # create set of all authors of story
-		print("allEditors:",allEditors)
-		if (username in allEditors):
-			flash("You have already edited this story")
-			return redirect(url_for("homepage"))
-		else:
-			pastStory=cur.execute("SELECT content from edits WHERE title = ? AND user = ?",(givenTitle,fetchedUser[0],)).fetchone()[0]
-			cur.execute("DELETE FROM recent WHERE title = ?",(givenTitle,)) # row with containing given title
-			cur.execute("INSERT INTO recent VALUES(?,?,?)",(givenTitle,username,str(datetime.datetime.now()),)) # update with correct last author of story
-			cur.execute("INSERT INTO edits VALUES(?,?,?,?,?)",(username,givenTitle,givenStory,pastStory+"\n"+givenStory,str(datetime.datetime.now()),)) #update edits with new and improved story
-	flash("Congrats you edited a story!")
+	fetchedUser= db.getRecent(givenTitle)#get last author
+	print("fetchedUser:",fetchedUser)
+	if (fetchedUser is None or len(fetchedUser) == 0):
+		flash("It seems that that story hasn't been created yet...")
+		return redirect(url_for("homepage"))
+	fetchedUser=fetchedUser[0]
+	allEditors=set([x[0] for x in db.getAllEditors(givenStory)]) # create set of all authors of story
+	print("allEditors:",allEditors)
+	if (username in allEditors):
+		flash("You have already edited this story")
+		return redirect(url_for("homepage"))
+	else:
+		pastStory=db.getEdit(fetchedUser,givenTitle)[0]
+		db.makeEdit(givenTitle,username,str(datetime.datetime.now()),givenStory,pastStory)
+	flash("Congrats, you edited a story!")
 	return redirect(url_for("homepage"))
 
 # returns page for creating a story if logged in
@@ -185,18 +187,15 @@ def authStory():
 	givenTitle=request.form["storyTitle"]
 	givenStory=request.form["storyText"]
 	username=session["uname"]
-
-	with sqlite3.connect("discobandit.db") as db:
-		cur= db.cursor()
-		fetchedUser= cur.execute("SELECT user from recent WHERE title = ?",(givenTitle,)).fetchall()
-		#print(len(fetchedPass))
-		if (len(fetchedUser) == 0):
-			print("1: len is 0 in newStoryAuth")
-			cur.execute("INSERT INTO recent VALUES(?,?,?)",(givenTitle,username,str(datetime.datetime.now()),))
-			cur.execute("INSERT INTO edits VALUES(?,?,?,?,?)",(username,givenTitle,givenStory,givenStory,str(datetime.datetime.now()),))
-		else:
-			flash("STORY WITH THAT TITLE ALREADY EXISTS PLS TRY AGAIN")
-			return redirect(url_for("newStory"))
+	fetchedUser = db.getRecent(givenTitle)
+	#print(len(fetchedPass))
+	if fetchedUser is None or len(fetchedUser) == 0:
+		print("len is 0 in newStoryAuth")
+		time = str(datetime.datetime.now())
+		db.newStory(givenTitle,username, time, givenStory)
+	else:
+		flash("STORY WITH THAT TITLE ALREADY EXISTS PLS TRY AGAIN")
+		return redirect(url_for("newStory"))
 	flash("Congrats you added a story!")
 	return redirect(url_for("homepage"))
 
@@ -204,23 +203,23 @@ def authStory():
 @app.route("/search", methods = ['POST','GET'])
 def searchStory():
 	searchQuery=request.form["search"]
+	print(searchQuery)
 	if not session.get("uname"):
 		return redirect(url_for("homepage"))
 	username=session["uname"]
-
-	with sqlite3.connect("discobandit.db") as db:
-		cur= db.cursor()
-		fetchedTitles= cur.execute("SELECT title from recent WHERE title = ?",(searchQuery,)).fetchall()
-		print(fetchedTitles)
-		if (len(fetchedTitles) == 0):
-			flash("This Story Doesn't Exist!")
-			return redirect(url_for("homepage"))
-		fetchedPass3= cur.execute("SELECT content from edits WHERE user = ? AND title=?",(session.get("uname"),request.args.get("title"),)).fetchone()
-	if (fetchedPass3 is None or len(fetchedPass3) == 0):
-		flash("YOU CAN'T READ " + searchQuery)
+	fetchedStories=db.checkTitle(searchQuery)
+	print(fetchedStories)
+	if (fetchedStories is None or len(fetchedStories) == 0):
+		flash("This Story Doesn't Exist!")
 		return redirect(url_for("homepage"))
-	return render_template("searchStory.html", user = username, stories = fetchedTitles, lenStories = len(fetchedTitles))
+	fetchedEdit= db.getEdit(session.get("uname"),searchQuery) 
+	print(fetchedEdit)
+	if (fetchedEdit is None or len(fetchedEdit) == 0):
+		return redirect(url_for("edit", title = searchQuery))
+	return redirect(url_for("read", title = searchQuery))
 
 if __name__ == "__main__":
     app.debug = True
     app.run()
+
+

@@ -4,9 +4,9 @@
 {% block content %}
 
 <h2> Edit a story </h2>
+<h4> Current story: {{ title }} </h4>
 <p> Displayed is the last contribution to the story: </p>
-<p> The last contribution happened at {{timecr}}</p>
-<p> The title of the story is {{ story }}</p>
+<p> {{ story[0] }}</p>
 <form action="/editStoryAuth" method="GET" id="form">
     <button type ="submit">Submit</button><br>
     <br>
