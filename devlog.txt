@@ -113,3 +113,7 @@ hanR -- 2018-10-25 13:47
 --------------------------------------------------------------
 Changed so that user must add text into the title and text box when creating a story. Flashes error otherwise. 
 ==============================================================
+korozaA -- 2018-10-25 14:03
+--------------------------------------------------------------
+Changed so that all links were butttons. Created another base for pages not having logout function. 
+==============================================================
