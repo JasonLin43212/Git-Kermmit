@@ -107,5 +107,5 @@ Centered login and logged in homepages, added comments to app.py.
 ==============================================================
 foleyM -- 2018-10-25 00:05
 --------------------------------------------------------------
-Moved all database commands from app.py to util/db.py
+Moved all database commands from app.py to util/db.py. Refactored search so that it goes directly to edit or read.
 ==============================================================
