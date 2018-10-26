@@ -25,12 +25,15 @@ Steps to create a venv:
 - sqlite3
 - flask
 - os
+- passlib
+- datetime
 
-Of these, flask is the only one not installed automatically when you install python3
+Of these, flask and passlib are the only ones not installed automatically when you install python3
 
 __NOTE:__ Activate your virtual enviornment before installing this!
 
-To install, run `pip install flask`
+To install flask, run `pip install flask`
+To install passlib, run `pip install passlib`
 
 ## Launch instructions:
 1. Activate your virtual enviornment

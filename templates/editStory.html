@@ -2,9 +2,11 @@
 {% extends "base.html" %}
 {% block log %}Logout{% endblock %}
 {% block content %}
-Choose story to edit:
+
 <h2> Edit a story </h2>
-<p>{{ story }}</p>
+<h4> Current story: {{ title }} </h4>
+<p> Displayed is the last contribution to the story: </p>
+<p> {{ story[0] }}</p>
 <form action="/editStoryAuth" method="GET" id="form">
     <button type ="submit">Submit</button><br>
     <br>

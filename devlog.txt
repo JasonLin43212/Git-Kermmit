@@ -8,13 +8,13 @@ pd 8
 Story-Time!!! A website where users come together to create stories.
 
 
- ______   ______   __   __   __       ______   _______     
-/_____/\ /_____/\ /_/\ /_/\ /_/\     /_____/\ /______/\    
-\:::_ \ \\::::_\/_\:\ \\ \ \\:\ \    \:::_ \ \\::::__\/__  
- \:\ \ \ \\:\/___/\\:\ \\ \ \\:\ \    \:\ \ \ \\:\ /____/\ 
-  \:\ \ \ \\::___\/_\:\_/.:\ \\:\ \____\:\ \ \ \\:\\_  _\/ 
-   \:\/.:| |\:\____/\\ ..::/ / \:\/___/\\:\_\ \ \\:\_\ \ \ 
-    \____/_/ \_____\/ \___/_(   \_____\/ \_____\/ \_____\/ 
+ ______   ______   __   __   __       ______   _______
+/_____/\ /_____/\ /_/\ /_/\ /_/\     /_____/\ /______/\
+\:::_ \ \\::::_\/_\:\ \\ \ \\:\ \    \:::_ \ \\::::__\/__
+ \:\ \ \ \\:\/___/\\:\ \\ \ \\:\ \    \:\ \ \ \\:\ /____/\
+  \:\ \ \ \\::___\/_\:\_/.:\ \\:\ \____\:\ \ \ \\:\\_  _\/
+   \:\/.:| |\:\____/\\ ..::/ / \:\/___/\\:\_\ \ \\:\_\ \ \
+    \____/_/ \_____\/ \___/_(   \_____\/ \_____\/ \_____\/
 ==============================================================
 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
@@ -27,9 +27,9 @@ korozaA -- 2018-10-17 12:25
 --------------------------------------------------------------
 Team reflection on Programming Sucks
 1) Given that each team member has different strengths and areas of expertise, we must do our best to make sure that everyone is on the same page before implementing any major feature. Clear communication and delineation of tasks is crucial for building our sturdy bridge.
-2) Master the basics before venturing into the deep end. You must build and hone your skills before treading further into the bottomless pit that is the set of all computer science tools available on the Internet. As a team, we will try to limit confusion by sticking to simplicity. 
+2) Master the basics before venturing into the deep end. You must build and hone your skills before treading further into the bottomless pit that is the set of all computer science tools available on the Internet. As a team, we will try to limit confusion by sticking to simplicity.
 ==============================================================
-hanR -- 2018-10-17 2:44
+hanR -- 2018-10-17 14:44
 --------------------------------------------------------------
 Edited devlog format
 ==============================================================
@@ -47,25 +47,25 @@ Edited devlog format
 ==============================================================
 korozaA -- 2018-10-18 20:45
 --------------------------------------------------------------
-Create db and added appropriate tables. Worked on Authentication. 
+Create db and added appropriate tables. Worked on Authentication.
 ==============================================================
 hanR -- 2018-10-18 22:26
 --------------------------------------------------------------
 DataBase now stores newly created users and when a user logs in, it checks to see if username/pass exists in db.
 ==============================================================
-hanR -- 2018-10-18 11:00
+hanR -- 2018-10-18 23:00
 --------------------------------------------------------------
-Fixed urldirect for newly created users. Other login features not yet included. 
+Fixed urldirect for newly created users. Other login features not yet included.
 ==============================================================
-hanR -- 2018-10-19 2:03
+hanR -- 2018-10-19 14:03
 --------------------------------------------------------------
 Create account checks to see if username already exists in the DB. If it does, asks user to create another username.
 ==============================================================
 korozaA -- 2018-10-20 13:45
 --------------------------------------------------------------
-User can now create stories. Titles and initial story contents stored in appropriate tables. 
+User can now create stories. Titles and initial story contents stored in appropriate tables.
 ==============================================================
-foleyM -- 2018-10-21 03:30
+foleyM -- 2018-10-21 15:30
 --------------------------------------------------------------
 User can now view all unedited stories. They can also edit stories. Titles and story contents (all content and edit made) stored in appropriate tables. The recents table is updated as well.
 ==============================================================
@@ -81,10 +81,6 @@ howladerM -- 2018-10-21 21:00
 --------------------------------------------------------------
 Fixed bug where users were not able to edit stories they've never contributed to. Added comments to app.py
 ==============================================================
-foleyM -- 2018-10-22 14:00
---------------------------------------------------------------
-Create README.md
-==============================================================
 korozaA -- 2018-10-22 18:33
 --------------------------------------------------------------
 Added missing comments,cleaned up some print statements,requested passlib and datetime
@@ -97,4 +93,31 @@ hanR -- 2018-10-23 13:56
 --------------------------------------------------------------
 Fixed search story bugs and flashing messages for reading stories.
 ==============================================================
-
+foleyM -- 2018-10-23 13:58
+--------------------------------------------------------------
+Replace text in text boxes with placeholder
+==============================================================
+korozaA -- 2018-10-23 21:42
+-------------------------------------------------------------
+Added timestamp feature when viewing reading and editing stories. Code now stores hashed passwords using passlib.
+==============================================================
+howladerM -- 2018-10-24 13:23
+--------------------------------------------------------------
+Centered login and logged in homepages, added comments to app.py.
+==============================================================
+foleyM -- 2018-10-25 00:05
+--------------------------------------------------------------
+Moved all database commands from app.py to util/db.py. Refactored search so that it goes directly to edit or read.
+==============================================================
+hanR -- 2018-10-25 13:47
+--------------------------------------------------------------
+Changed so that user must add text into the title and text box when creating a story. Flashes error otherwise. 
+==============================================================
+korozaA -- 2018-10-25 14:03
+--------------------------------------------------------------
+Changed so that all links were butttons. Created another base for pages not having logout function. 
+==============================================================
+foleyM -- 2018-10-25 20:00
+--------------------------------------------------------------
+Created logo!
+==============================================================
