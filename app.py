@@ -1,199 +1,178 @@
-from flask import Flask, render_template, request, session, url_for, redirect, flash
-import util.db as db
-import os # Used for random key
+import datetime,os
+
 import sqlite3
 import passlib
 from passlib.hash import pbkdf2_sha256
-import datetime
+from flask import Flask, render_template, request, session, url_for, redirect, flash
+
+import util.db as db
 
 
 db.create()
-
 app = Flask(__name__)
 app.secret_key=os.urandom(32)# 32 bits of random data as a string
 
-# Root route. Displays appropriate homepage based on whether user is logged in.
 @app.route("/")
 def homepage():
+	'''Displays appropriate homepage based on whether user is logged in.'''
 	if session.get("uname"):
 		username = session["uname"]
 		fetchedPass= db.getEdits(session["uname"])
 		return render_template("loggedIn.html", user = username, stories = fetchedPass, lenStories = len(fetchedPass))
 	return render_template("login.html",Title = 'Login')
 
-#Logout route. If user is logged in, they can logout from any page.
 @app.route('/logout',methods=['POST','GET'])
 def logout():
+	'''Route logs the user out if they are logged in'''
 	if not session.get("uname"):
 		return redirect(url_for("homepage"))
 	session.pop('uname') #ends session
 	return redirect(url_for('homepage')) #goes to home, where you can login
 
-# Authentication route.
 @app.route("/authenticate", methods=['POST'])
 def callback():
+	'''Authentication route used to log user in'''
 	givenUname=request.form["username"]
 	givenPwd=request.form["password"]
 	fetchedHash=db.getPwd(givenUname)
 	if fetchedHash:
-		print("it exists")
 		if pbkdf2_sha256.verify(givenPwd, fetchedHash[0][0]):
-			print(fetchedHash)
-			# access first tuple of tuples
-			#fix since fetchall returns a tuple of tuples
-			session["uname"]= givenUname
-			if session.get("error"):# for when there is no error
-				session.pop("error")
+			#fix since fetchall returns a list of tuples
+			session["uname"]= givenUname #stores givern username in session
 			return redirect(url_for("homepage"))
 		else:
-			session["error"]=2# error 2 means password was wrong
+			flash('Password is wrong!')
 			return redirect(url_for("homepage"))
 	else:
-		print("it doesn't")
-		session["error"]=1
-		return redirect(url_for("homepage"))#error 1 means username was wrong
+		flash('Username is wrong!')
+		return redirect(url_for("homepage"))
 
-# route used upon clicking create user button
 @app.route("/newUser", methods=['POST','GET'])
 def createAcct():
+	'''Used to access Create New User functionality'''
 	return render_template("newUser.html")
 
-# Adds account to db and checks if it exists
 @app.route("/addUser", methods=['POST'])
 def addAcct():
+	'''Adds account to db if it does not already exist'''
 	givenUname=request.form["username"]
 	givenPwd=request.form["password"]
 	confirmPwd = request.form["confirm_password"] #prompts user twice
-	hash = pbkdf2_sha256.hash(givenPwd)
-	fetchedPass=db.getPwd(givenUname)
-	print(len(fetchedPass))#diagnostic
+	hash = pbkdf2_sha256.hash(givenPwd) #user's hashed password stored in db
+	if (len(givenUname)==0 or len(givenPwd)==0):
+		flash('Username/Password cannot be 0 characters long')
+		return redirect(url_for("createAcct"))
 	if (confirmPwd != givenPwd):
 		flash("Paswords don't match. Please try again!")
 		return redirect(url_for("createAcct"))
-	elif (len(fetchedPass) == 0):
+	fetchedPass=db.getPwd(givenUname)
+	if (len(fetchedPass) == 0):
 		db.newAcct(givenUname,hash)
 	else:
 		flash("USER NAME ALREADY EXISTS PLS TRY AGAIN")
 		return redirect(url_for("createAcct"))
 	return redirect(url_for("homepage"))
 
-# route used to fetch last line contributed to story and to select titles user can contribute to
 @app.route("/read")
 def read():
+	'''Used to fetch and diplay the appropriate timestamp and content for a story'''
 	if not session.get("uname"):
 		return redirect(url_for("homepage"))
 	if not request.args.get("title"):
 		return redirect(url_for("homepage"))
-	print(request.args.get("title"))
 	givenTitle=request.args.get("title")
 	fetchedUser=db.getRecent(givenTitle)
 	if fetchedUser is None or len(fetchedUser)==0:
 		flash(request.args.get("title") + " has not been created.")
 		return redirect(url_for("homepage"))
 	fetchedUser=fetchedUser[0]
-	fetchedEdit=db.getEdit(fetchedUser,givenTitle)
+	fetchedEdit=db.getEdit(fetchedUser,givenTitle) # fetching last edit
 	fetchedHasEdited= db.getEdit(session.get("uname"),givenTitle)
 	if (fetchedHasEdited is None or len(fetchedHasEdited) == 0):
 		flash("YOU CAN'T READ " + request.args.get("title"))
 		return redirect(url_for("homepage"))
-
-	storyList=fetchedEdit[0].split("\n") ## was unable to insert <br> or /n into jinja templates so do this instead
-	###### could possibly do something so that you could see your own edit
+	storyList=fetchedEdit[0].split("\n") # used to separate lines
 	fetchedTime=db.getEditTime(givenTitle)
 	return render_template("readStory.html", title=request.args.get("title"), story=storyList,timecr= fetchedTime)
 
-# route used to determine which story a user can add to.
 @app.route("/unwrittenStories",methods=['POST','GET'])
 def write():
+	'''Used to determine which stories a user may add to'''
 	if not session.get("uname"):
 		return redirect(url_for("homepage"))
 	edited =db.getEdits(session["uname"])
-	edited = set([x[0] for x in edited]) #converts tuple of all titles from edits from current user into a set
+	edited = set([x[0] for x in edited])
 	allStories=db.getAllStories()
-	allStories=[x[0] for x in allStories] #converts tuple of all titles from recent into a list
+	allStories=[x[0] for x in allStories]
 	unwritten=[]
 	for story in allStories:
-		if story in edited: #if a story from allStories in in edited, constant look-up time
+		if story in edited:
 			continue #skips over that story (doesn't append it)
-		unwritten.append(story) ##add to unwritten the stories the user has not written to
-	print(unwritten)
+		unwritten.append(story) #add to unwritten the stories the user has not written to
 	return render_template("allStories.html", stories=unwritten, lenStories=len(unwritten))
 
-#used for diplaying which stories the user can contribute to and access editing stage
 @app.route("/edit")
-def edit(): # make sure that they cant edit one (check edited stories before allowing them to submit)
+def edit():
+	'''Used to fetch timestamps and last edit made; makes sure user has not edited that story before displaying'''
 	if not session.get("uname"):
 		return redirect(url_for("homepage"))
 	if not request.args.get("title"):
 		return redirect(url_for("homepage"))
 	username=session["uname"]
 	givenTitle=request.args.get("title")
-	print("giventitle:",givenTitle)
 	fetchedUser = db.getRecent(givenTitle)
-	print("fetchedUser:",fetchedUser)
-	if fetchedUser is None or len(fetchedUser) == 0:
+	if fetchedUser is None or len(fetchedUser) == 0: #no fetched users
 		flash("It seems that that story hasn't been created yet...")
 		return redirect(url_for("homepage"))
 	fetchedUser=fetchedUser[0]
 	allEditors=set([x[0] for x in db.getAllEditors(givenTitle)]) # creates set of all authors of given story
-	print("allEditors:",allEditors)
-	if (username in allEditors): #to check if user already edite the story
+	if (username in allEditors): #to check if user already edited the story
 		flash("You have already edited this story")
 		return redirect(url_for("homepage"))
 	else:
 		pastEdit=db.getEditMade(fetchedUser,givenTitle)
 		fetchedTime=db.getEditTime(givenTitle)
-	print("requesting title",request.args.get("title"))
 	return render_template("editStory.html", title=givenTitle, story=pastEdit, timecr=fetchedTime) #renders template and shows user only last edit
 
-# checks if user can edit and, if so, updates tables with user input
 @app.route("/editStoryAuth", methods=['POST','GET'])
 def authEdit():
+	'''Checks if user can edit and, if so, updates tables with user input from edit page'''
 	if not session.get("uname"):
 		return redirect(url_for("homepage"))
 	givenTitle=request.args.get("storyTitle")
-
-	print("title",givenTitle)
 	givenStory=request.args.get("storyText")
-	print("story",givenStory)
 	username=session["uname"]
-	fetchedUser= db.getRecent(givenTitle)#get last author
-	print("fetchedUser:",fetchedUser)
+	fetchedUser= db.getRecent(givenTitle)# get last author
 	if (fetchedUser is None or len(fetchedUser) == 0):
 		flash("It seems that that story hasn't been created yet...")
 		return redirect(url_for("homepage"))
 	fetchedUser=fetchedUser[0]
 	allEditors=set([x[0] for x in db.getAllEditors(givenStory)]) # create set of all authors of story
-	print("allEditors:",allEditors)
 	if (username in allEditors):
 		flash("You have already edited this story")
 		return redirect(url_for("homepage"))
 	else:
 		pastStory=db.getEdit(fetchedUser,givenTitle)[0]
-		db.makeEdit(givenTitle,username,str(datetime.datetime.now()),givenStory,pastStory)
+		db.makeEdit(givenTitle,username,str(datetime.datetime.now()),givenStory,pastStory)# db updated with time and user's edit
 	flash("Congrats, you edited a story!")
 	return redirect(url_for("homepage"))
 
-# returns page for creating a story if logged in
 @app.route("/create", methods=['POST','GET'])
 def newStory():
+	'''Returns page for creating a story if user logged in'''
 	if not session.get("uname"):
 		return redirect(url_for("homepage"))
 	return render_template("createStory.html")
 
-
-# updates table with new story if story does not alread exist and if user is logged in
 @app.route("/newStoryAuth", methods=['POST','GET'])
 def authStory():
+	'''Updates db with new story if story does not already exists, and if user is logged in'''
 	if not session.get("uname"):
 		return redirect(url_for("homepage"))
 	givenTitle=request.form["storyTitle"]
 	givenStory=request.form["storyText"]
 	username=session["uname"]
 	fetchedUser = db.getRecent(givenTitle)
-	#print(len(fetchedPass))
-	print(givenTitle)
-	print(givenStory)
 	if len(givenTitle) == 0:
 		flash("PLEASE ENTER A TITLE!")
 		return redirect(url_for("newStory"))
@@ -201,33 +180,29 @@ def authStory():
 		flash("PLEASE ADD TEXT TO YOUR STORY")
 		return redirect(url_for("newStory"))
 	if fetchedUser is None or len(fetchedUser) == 0:
-		print("len is 0 in newStoryAuth")
 		time = str(datetime.datetime.now())
-		db.newStory(givenTitle,username, time, givenStory)
+		db.newStory(givenTitle,username, time, givenStory) #updates db with time and user's new story
 	else:
-		flash("STORY WITH THAT TITLE ALREADY EXISTS PLS TRY AGAIN")
+		flash("STORY WITH THAT TITLE ALREADY EXISTS PLS TRY AGAIN") #titles should be unique
 		return redirect(url_for("newStory"))
 	flash("Congrats you added a story!")
 	return redirect(url_for("homepage"))
 
-# in the case that the list of stories is too extensive, user can search through stories to read and edit
 @app.route("/search", methods = ['POST','GET'])
 def searchStory():
+	'''User can input exact name of story to possibly read and/or edit'''
 	searchQuery=request.form["search"]
-	print(searchQuery)
 	if not session.get("uname"):
 		return redirect(url_for("homepage"))
 	username=session["uname"]
 	fetchedStories=db.checkTitle(searchQuery)
-	print(fetchedStories)
-	if (fetchedStories is None or len(fetchedStories) == 0):
+	if (fetchedStories is None or len(fetchedStories) == 0):#checking if story exists
 		flash("This Story Doesn't Exist!")
 		return redirect(url_for("homepage"))
 	fetchedEdit= db.getEdit(session.get("uname"),searchQuery)
-	print(fetchedEdit)
 	if (fetchedEdit is None or len(fetchedEdit) == 0):
 		return redirect(url_for("edit", title = searchQuery))
-	return redirect(url_for("read", title = searchQuery))
+	return redirect(url_for("read", title = searchQuery)) #user reads story if they already edited
 
 if __name__ == "__main__":
     app.debug = True

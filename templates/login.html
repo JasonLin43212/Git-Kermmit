@@ -11,11 +11,6 @@
     Password: <input type="password" name="password" placeholder="password"><br>
     <button type ="submit">Login</button>
 </form>
-{% if session["error"] == 1 %}
-<p style="color: red">Username incorrect.</p>
-{% elif session["error"]== 2 %}
-<p style="color: red">Password incorrect.</p>
-{% endif %}
 
 <br>
 <br>
