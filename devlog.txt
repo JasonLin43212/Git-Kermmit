@@ -49,6 +49,10 @@ korozaA -- 2018-10-18 20:45
 --------------------------------------------------------------
 Create db and added appropriate tables. Worked on Authentication.
 ==============================================================
+korozaA -- 2018-10-18 21:00
+--------------------------------------------------------------
+Design Change Specification: There will not longer be a homepage for users that are not logged in. Team deemed it less confusing to just return the user to the Authorization page. 
+==============================================================
 hanR -- 2018-10-18 22:26
 --------------------------------------------------------------
 DataBase now stores newly created users and when a user logs in, it checks to see if username/pass exists in db.
@@ -84,6 +88,8 @@ Fixed bug where users were not able to edit stories they've never contributed to
 korozaA -- 2018-10-22 18:33
 --------------------------------------------------------------
 Added missing comments,cleaned up some print statements,requested passlib and datetime
+
+Design Change Specification: To ensure that passwords are secure in db, we will use passlib module to hash input passwords. In addition, team thinks a datetime feature would make for a nifty addition to edited posts. The inclusion of this feature requires another column added to recent table (crtime).
 ==============================================================
 foleyM -- 2018-10-23 00:18
 --------------------------------------------------------------
@@ -109,6 +115,7 @@ foleyM -- 2018-10-25 00:05
 --------------------------------------------------------------
 Moved all database commands from app.py to util/db.py. Refactored search so that it goes directly to edit or read.
 ==============================================================
+
 hanR -- 2018-10-25 13:47
 --------------------------------------------------------------
 Changed so that user must add text into the title and text box when creating a story. Flashes error otherwise. 
@@ -121,3 +128,20 @@ foleyM -- 2018-10-25 20:00
 --------------------------------------------------------------
 Created logo!
 ==============================================================
+hanR -- 2018-10-25 13:47
+--------------------------------------------------------------
+Changed so that user must add text into the title and text box when creating a story. Flashes error otherwise. 
+==============================================================
+korozaA -- 2018-10-25 14:03
+--------------------------------------------------------------
+Changed so that all links were butttons. Created another base for pages not having logout function. 
+==============================================================
+foleyM -- 2018-10-25 20:00
+--------------------------------------------------------------
+Created logo!
+==============================================================
+korozaA -- 2018-10-27 13:13
+--------------------------------------------------------------
+Final version of design pdf. Added docstring to code, fixed bug where user can create an account without username and/or password, removed print statements, changed template for logged in pages (instead of base2.html)
+==============================================================
+
