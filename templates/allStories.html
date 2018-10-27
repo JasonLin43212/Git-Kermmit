@@ -1,20 +1,21 @@
 <!DOCTYPE html>
-{% extends "base.html" %}
-
+{# Displays stories user can edit #}
+{% extends "baseLoggedIn.html" %}
 {% block title %}Unedited stories{% endblock %}
 {% block log %}Logout{% endblock %}
 {% block content %}
 <h2> Stories To Edit </h2>
 {% if lenStories == 0 %}
 <p>Wowza! What a prolific writer?! You've edited all the stories!</p>
+{# Displayed when no stories to edit #}
 {% else %}
 <table border = "1">
 <tr>
     <th>Story</th></tr>
     {% for story in stories %}
     <tr><td><a href = {{ url_for('edit', title=story) }}>{{ story }}</a></td></tr>
+    {# Displays url for specified story #}
     {% endfor %}
-    {# Maybe add num of past editors #}
 </table>
 {% endif %}
 {% endblock %}

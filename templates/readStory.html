@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-{% extends "base.html" %}
-
+{# Used to read stories #}
+{% extends "baseLoggedIn.html" %}
 {% block title %}Read {{ title }}{% endblock %}
 {% block log %}Logout{% endblock %}
 
 {% block content %}
 <h2> Reading Story: {{title}} </h2>
 <p> The last edit for this story occured at {{timecr}} </p>
+{# Displays timestamp #}
 <br>
 {% for piece in story%}
 	{{ piece }}

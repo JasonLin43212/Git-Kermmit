@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-{% extends "base.html" %}
+{% extends "baseLoggedIn.html" %}
+{% block title %}Search {{story[0]}}{% endblock %}
 {% block log %}Logout{% endblock %}
 {% block content %}
 <table border = "1">
 <tr>
     <th>Story</th></tr>
-    {% for story in stories %}
+    {% for story in stories %} {# Creates a table of stories user can access#}
     <tr><td><a href = {{ url_for('read', title=story) }}>{{ story[0] }}</a></td></tr>
     {% endfor %}
-    {# Maybe add num of words #}
 </table>
 
 {% endblock %}

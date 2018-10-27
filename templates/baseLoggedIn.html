@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 {% extends "base.html" %}
+{# All pages that inherit allow for logout#}
 
 
-{% block content %}
-<div align ="right"><a href="/logout">Logout</a></div>
-
-
-{% block content2 %}
-{% endblock %}
-
+{% block content0 %}
+<form action="/logout" method="POST">
+    <div align ="right"><button type ="submit">{% block log %} {% endblock %}</button></div>
+</form>
 {% endblock %}
