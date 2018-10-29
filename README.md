@@ -34,7 +34,7 @@ Steps to create a venv:
 - datetime
 
 Of these, flask, passlib, and wheel are the only ones not installed automatically when you install python3.
-This team requested the use of passlib and datetime for this project. Datetime is used to fetch the user's current date and time ([link](https://docs.python.org/3/library/datetime.html) to primary documentation). This information is used to display when stories were last edited. Passlib is used to more securely store passwords in our database ([link](https://passlib.readthedocs.io/en/stable/) to primary documentation).  
+This team requested the use of passlib and datetime for this project. Datetime is used to fetch the user's current date and time ([link](https://docs.python.org/3/library/datetime.html) to primary documentation). This information is used to display when stories were last edited, a feature which we thought was pretty nifty. Passlib is used to store passwords more securely  in our database by using the imported hashing method([link](https://passlib.readthedocs.io/en/stable/) to primary documentation).
 
 __NOTE:__ Activate your virtual enviornment before installing this!
 
