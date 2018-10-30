@@ -19,129 +19,123 @@ Story-Time!!! A website where users come together to create stories.
 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
-foleyM -- 2018-10-17 00:10
+maryannF -- 2018-10-17 00:10
 --------------------------------------------------------------
 Added design PDF, made the DB explanation more clear (outlined table usage).
 ==============================================================
-korozaA -- 2018-10-17 12:25
+aleksandraK -- 2018-10-17 12:25
 --------------------------------------------------------------
 Team reflection on Programming Sucks
 1) Given that each team member has different strengths and areas of expertise, we must do our best to make sure that everyone is on the same page before implementing any major feature. Clear communication and delineation of tasks is crucial for building our sturdy bridge.
 2) Master the basics before venturing into the deep end. You must build and hone your skills before treading further into the bottomless pit that is the set of all computer science tools available on the Internet. As a team, we will try to limit confusion by sticking to simplicity.
 ==============================================================
-hanR -- 2018-10-17 14:44
+robinH -- 2018-10-17 14:44
 --------------------------------------------------------------
 Edited devlog format
 ==============================================================
-foleyM -- 2018-10-17 14:54
+maryannF -- 2018-10-17 14:54
 --------------------------------------------------------------
 Pushed Flask Starter Kit to repo + added few functions
 ==============================================================
-howladerM -- 2018-10-17 21:00
+mohtasimH -- 2018-10-17 21:00
 --------------------------------------------------------------
 Added html files and set up flask functionality for those pages.
 ==============================================================
-foleyM -- 2018-10-18 9:00
+maryannF -- 2018-10-18 9:00
 --------------------------------------------------------------
 Edited devlog format
 ==============================================================
-korozaA -- 2018-10-18 20:45
+aleksandraK -- 2018-10-18 20:45
 --------------------------------------------------------------
 Create db and added appropriate tables. Worked on Authentication.
 ==============================================================
-korozaA -- 2018-10-18 21:00
+aleksandraK -- 2018-10-18 21:00
 --------------------------------------------------------------
 Design Change Specification: There will not longer be a homepage for users that are not logged in. Team deemed it less confusing to just return the user to the Authorization page. 
 ==============================================================
-hanR -- 2018-10-18 22:26
+robinH -- 2018-10-18 22:26
 --------------------------------------------------------------
 DataBase now stores newly created users and when a user logs in, it checks to see if username/pass exists in db.
 ==============================================================
-hanR -- 2018-10-18 23:00
+robinH -- 2018-10-18 23:00
 --------------------------------------------------------------
 Fixed urldirect for newly created users. Other login features not yet included.
 ==============================================================
-hanR -- 2018-10-19 14:03
+robinH -- 2018-10-19 14:03
 --------------------------------------------------------------
 Create account checks to see if username already exists in the DB. If it does, asks user to create another username.
 ==============================================================
-korozaA -- 2018-10-20 13:45
+aleksandraK -- 2018-10-20 13:45
 --------------------------------------------------------------
 User can now create stories. Titles and initial story contents stored in appropriate tables.
 ==============================================================
-foleyM -- 2018-10-21 15:30
+maryannF -- 2018-10-21 15:30
 --------------------------------------------------------------
 User can now view all unedited stories. They can also edit stories. Titles and story contents (all content and edit made) stored in appropriate tables. The recents table is updated as well.
 ==============================================================
-hanR -- 2018-10-21 16:29
+robinH -- 2018-10-21 16:29
 --------------------------------------------------------------
 When creating account, user must confirm password to make sure the password typed in intially is the password he/she wants
 ==============================================================
-foleyM -- 2018-10-21 17:07
+maryannF -- 2018-10-21 17:07
 --------------------------------------------------------------
 Read displays each edit on a seperate line.  Fixed bug where there was sometimes an error when trying to edit.
 ==============================================================
-howladerM -- 2018-10-21 21:00
+mohtasimH -- 2018-10-21 21:00
 --------------------------------------------------------------
 Fixed bug where users were not able to edit stories they've never contributed to. Added comments to app.py
 ==============================================================
-korozaA -- 2018-10-22 18:33
+aleksandraK -- 2018-10-22 18:33
 --------------------------------------------------------------
 Added missing comments,cleaned up some print statements,requested passlib and datetime
 
 Design Change Specification: To ensure that passwords are secure in db, we will use passlib module to hash input passwords. In addition, team thinks a datetime feature would make for a nifty addition to edited posts. The inclusion of this feature requires another column added to recent table (crtime).
 ==============================================================
-foleyM -- 2018-10-23 00:18
+maryannF -- 2018-10-23 00:18
 --------------------------------------------------------------
 Edit readme
 ==============================================================
-hanR -- 2018-10-23 13:56
+robinH -- 2018-10-23 13:56
 --------------------------------------------------------------
 Fixed search story bugs and flashing messages for reading stories.
 ==============================================================
-foleyM -- 2018-10-23 13:58
+maryannF -- 2018-10-23 13:58
 --------------------------------------------------------------
 Replace text in text boxes with placeholder
 ==============================================================
-korozaA -- 2018-10-23 21:42
+aleksandraK -- 2018-10-23 21:42
 -------------------------------------------------------------
 Added timestamp feature when viewing reading and editing stories. Code now stores hashed passwords using passlib.
 ==============================================================
-howladerM -- 2018-10-24 13:23
+mohtasimH -- 2018-10-24 13:23
 --------------------------------------------------------------
 Centered login and logged in homepages, added comments to app.py.
 ==============================================================
-foleyM -- 2018-10-25 00:05
+maryannF -- 2018-10-25 00:05
 --------------------------------------------------------------
 Moved all database commands from app.py to util/db.py. Refactored search so that it goes directly to edit or read.
 ==============================================================
-
-hanR -- 2018-10-25 13:47
+robinH -- 2018-10-25 13:47
 --------------------------------------------------------------
 Changed so that user must add text into the title and text box when creating a story. Flashes error otherwise. 
 ==============================================================
-korozaA -- 2018-10-25 14:03
+aleksandraK -- 2018-10-25 14:03
 --------------------------------------------------------------
 Changed so that all links were butttons. Created another base for pages not having logout function. 
 ==============================================================
-foleyM -- 2018-10-25 20:00
---------------------------------------------------------------
-Created logo!
-==============================================================
-hanR -- 2018-10-25 13:47
+robinH -- 2018-10-25 14:10
 --------------------------------------------------------------
 Changed so that user must add text into the title and text box when creating a story. Flashes error otherwise. 
 ==============================================================
-korozaA -- 2018-10-25 14:03
+aleksandraK -- 2018-10-25 14:13
 --------------------------------------------------------------
 Changed so that all links were butttons. Created another base for pages not having logout function. 
 ==============================================================
-foleyM -- 2018-10-25 20:00
+maryannF -- 2018-10-25 20:00
 --------------------------------------------------------------
 Created logo!
 ==============================================================
-korozaA -- 2018-10-27 13:13
+aleksandraK -- 2018-10-27 13:13
 --------------------------------------------------------------
 Final version of design pdf. Added docstring to code, fixed bug where user can create an account without username and/or password, removed print statements, changed template for logged in pages (instead of base2.html)
 ==============================================================
-
