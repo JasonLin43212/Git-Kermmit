@@ -19,11 +19,11 @@ You are logged in as <b>{{user}}</b>
 {% if lenStories == 0 %}
 <p>No stories?! Better get to writing!</p>
 {% else %}
-<table border = "1">
+<table border = "0" style="background-color: #f5f5f5; border-bottom:1px solid #ddd">
 <tr>
-    <th>Story</th></tr>
+    <th style="background-color: #4CAF50;color:white;">Story</th></tr>
     {% for story in stories %}
-    <tr><td><a href = {{ url_for('read', title=story) }}>{{ story[0] }}</a></td></tr>
+    <tr><td><a style="color:#000000; text-decoration: none" href = {{ url_for('read', title=story) }}>{{ story[0] }}</a></td></tr>
     {% endfor %}
     {# Maybe add num of words #}
 </table>

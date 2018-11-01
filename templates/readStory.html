@@ -5,12 +5,12 @@
 {% block log %}Logout{% endblock %}
 
 {% block content %}
-<h2> Reading Story: {{title}} </h2>
-<p> The last edit for this story occured at {{timecr}} </p>
+<h2 style="text-align:center;"> Reading Story: {{title}} </h2>
+<p style="text-align:center;"> The last edit for this story occured at {{timecr}} </p>
 {# Displays timestamp #}
 <br>
 {% for piece in story%}
-	{{ piece }}
+	<p style="text-align:center;">{{ piece }}</p>
 	<br>
 {% endfor %}
 {% endblock %}

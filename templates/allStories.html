@@ -9,11 +9,11 @@
 <p>Wowza! What a prolific writer?! You've edited all the stories!</p>
 {# Displayed when no stories to edit #}
 {% else %}
-<table border = "1">
-<tr>
+<table border = "0" style="text-align: center;background-color: #f5f5f5; border-bottom:1px solid #ddd">
+<tr style="background-color: #4CAF50;color:white;">
     <th>Story</th></tr>
     {% for story in stories %}
-    <tr><td><a href = {{ url_for('edit', title=story) }}>{{ story }}</a></td></tr>
+    <tr><td><a style="text-decoration:none; color:black;"href = {{ url_for('edit', title=story) }}>{{ story }}</a></td></tr>
     {# Displays url for specified story #}
     {% endfor %}
 </table>
