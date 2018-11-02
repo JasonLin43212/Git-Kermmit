@@ -6,11 +6,11 @@
 
 {% block content %}
 <h2 style="text-align:center;"> Reading Story: {{title}} </h2>
-<p style="text-align:center;"> The last edit for this story occured at {{timecr}} </p>
+<p style="text-align:center; outline-style: dashed;background-color:MediumSeaGreen"> The last edit for this story occured at {{timecr}} </p>
 {# Displays timestamp #}
 <br>
 {% for piece in story%}
-	<p style="text-align:center;">{{ piece }}</p>
+	<p style="text-align:center;outline: 5px solid purple; background-color:LightGray">{{ piece }}</p>
 	<br>
 {% endfor %}
 {% endblock %}
